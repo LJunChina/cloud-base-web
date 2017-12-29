@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: base-web-consumer
+  resources:
+    static-locations: classpath:/static/
+server:
+  port: 8020
+eureka:
+  client:
+    service-url:
+      defaultZone : http://www.joninfo.cn:8000/eureka
+      #defaultZone : http://172.17.0.13:8000/eureka
