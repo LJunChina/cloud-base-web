@@ -1,6 +1,6 @@
 spring:
   application:
-    name: base-web-consumer
+    name: cloud-base-web
   resources:
     static-locations: classpath:/static/
 server:
@@ -8,5 +8,4 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone : http://www.joninfo.cn:8000/eureka
-      #defaultZone : http://172.17.0.13:8000/eureka
+      defaultZone : http://localhost:8000/eureka
