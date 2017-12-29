@@ -9,7 +9,7 @@ package com.cloud.base.web.utils;
  */
 public final class Constant {
     /**用户服务*/
-    public static final String USER_SERVICE = "http://user-microservice";
+    private static final String USER_SERVICE = "http://user-microservice";
 
     /**获取公钥*/
     public static final String GET_PUBLIC_KEY = USER_SERVICE + "/get-public-key";
