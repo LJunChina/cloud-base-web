@@ -7,16 +7,20 @@ import com.cloud.base.web.utils.EmptyChecker;
 import com.cloud.base.web.dto.BaseRespDTO;
 import com.cloud.base.web.enums.ResultCode;
 import com.cloud.base.web.utils.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -74,6 +78,39 @@ public class AuthorityController {
             return result;
         }catch (Exception e){
             logger.error("exception occurred in getAllMenus",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 获取所有菜单、操作信息
+     * @param name 菜单/操作名称
+     * @param pageIndex 页号
+     * @param pageSize 页大小
+     * @param appName 所属系统
+     * @param itemType 类型
+     * @return
+     */
+    @GetMapping(value = "/get-all-auth")
+    public String getAllAuthoritiesByPage(@RequestParam(value = "name",defaultValue = StringUtils.EMPTY) String name,
+                                          @RequestParam(value = "pageIndex",defaultValue = "1")Integer pageIndex,
+                                          @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
+                                          @RequestParam(value = "appName",defaultValue = StringUtils.EMPTY)String appName,
+                                          @RequestParam(value = "itemType",defaultValue = StringUtils.EMPTY)String itemType){
+        logger.info("the params of getAllAuthoritiesByPage,name:{},pageIndex:{},pageSize:{},appName:{},itemType:{}"
+                ,name,pageIndex,pageSize,appName,itemType);
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("name",name);
+            params.put("pageIndex",pageIndex);
+            params.put("pageSize",pageSize);
+            params.put("appName",appName);
+            params.put("itemType",itemType);
+            String result = this.restTemplate.getForEntity(Constant.GET_ALL_AUTHORITIES_BY_PAGE,String.class,params).getBody();
+            logger.info("result of the getAllAuthoritiesByPage is :{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getAllAuthoritiesByPage",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }

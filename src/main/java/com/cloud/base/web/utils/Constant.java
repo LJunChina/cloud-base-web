@@ -33,4 +33,6 @@ public final class Constant {
     public static final String GET_SYSTEM_INFO_BY_NAME = USER_SERVICE + "/system-info/get-system-info?systemName={systemName}&pageSize={pageSize}&pageIndex={pageIndex}";
     /**保存业务系统信息接口*/
     public static final String SAVE_SYSTEM_INFO = USER_SERVICE + "/system-info/save-system-info";
+    /**权限信息分页查询*/
+    public static final String GET_ALL_AUTHORITIES_BY_PAGE = USER_SERVICE + "/auth/get-all-auth?name={name}&pageIndex={pageIndex}&pageSize={pageSize}&appName={appName}&itemType={itemType}";
 }
