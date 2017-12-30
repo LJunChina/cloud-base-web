@@ -6,7 +6,7 @@
                 <h4 class="ui header" style="display: inline-block">
                     菜单权限管理
                 </h4>
-                <button class="ui basic button modaleffect" style="display: inline-block;margin-left: 10px" data-value="horizontal flip">
+                <button class="ui basic button menu-add" style="display: inline-block;margin-left: 10px" data-value="horizontal flip">
                     <i class="icon plus"></i>
                     新增菜单
                 </button>
@@ -29,24 +29,38 @@
     <div class="row">
         <div class="sixteen wide tablet sixteen wide computer column">
             <div class="ui segments">
-                <form class="ui form segment form4" id="system">
-                    <div class="two fields">
-                        <div class="field">
-                            <label>业务系统名称</label>
-                            <input placeholder="系统名称" name="systemName" type="text">
-                        </div>
-                        <div class="field">
-                            <label>业务系统中文名称</label>
-                            <input placeholder="中文名称" name="systemChn" type="text">
+                <form class="ui form segment form4" id="menu">
+                    <div class="field">
+                        <label>菜单名称</label>
+                        <input placeholder="菜单名称" name="name" type="text">
+                    </div>
+                    <div class="field">
+                        <label>请求路径</label>
+                        <input placeholder="请求路径" name="itemUri" type="text">
+                    </div>
+                    <div class="field">
+                        <label>所属系统</label>
+                        <div class="ui fluid search selection dropdown">
+                            <input type="hidden" name="appName">
+                            <i class="dropdown icon"></i>
+                            <input class="search" autocomplete="off" tabindex="0"><div class="default text">所属系统</div>
+                            <div class="menu" tabindex="-1" id="system-data">
+                            </div>
                         </div>
                     </div>
                     <div class="field">
-                        <label>系统HOST</label>
-                        <input placeholder="HOST" name="systemHost" type="text">
+                        <label>父级菜单</label>
+                        <div class="ui fluid search selection dropdown">
+                            <input type="hidden" name="parentId">
+                            <i class="dropdown icon"></i>
+                            <input class="search" autocomplete="off" tabindex="0"><div class="default text">父级菜单</div>
+                            <div class="menu" tabindex="-1" id="menu-data">
+                            </div>
+                        </div>
                     </div>
                     <div class="field">
-                        <label>系统context</label>
-                        <input placeholder="系统context" name="systemContext" type="text">
+                        <label>菜单图标</label>
+                        <input placeholder="菜单图标" name="icon" type="text">
                     </div>
                 </form>
             </div>
@@ -68,43 +82,73 @@
 <script src="../libs/sweetalert2/sweetalert2.min.js"></script>
 <script type="application/javascript">
     $(function () {
+        $(".ui.dropdown").dropdown({
+            allowCategorySelection: true,
+            transition: "fade up"
+        });
         var $submit = $("#submit");
-        $(".modaleffect").on("click", function () {
+        $(".menu-add").on("click", function () {
             var a = $(this).attr("data-value");
             $(".ui.modal.standard").modal("setting", "transition", a).modal("show");
+            $.getJSON('/system-info/get-system-info',{pageIndex:1,pageSize:99999},function (resp) {
+                if(resp && resp.code === '0000'){
+                    var list = resp.data.list;
+                    if(list && list.length > 0){
+                        $.each(list,function () {
+                            $("#system-data").append('<div class="item" data-value="'+this.id+'">'+this.systemName+'</div>');
+                        });
+                    }
+                }else {
+                    self.location = "../login.html";
+                }
+            });
+            $.getJSON('/auth/get-all-auth',{pageIndex:1,pageSize:99999,itemType:'1',appName:''},function (resp) {
+                if(resp && resp.code === '0000'){
+                    var list = resp.data.list;
+                    if(list && list.length > 0){
+                        $.each(list,function () {
+                            $("#menu-data").append('<div class="item" data-value="'+this.id+'">'+this.name+'</div>');
+                        });
+                    }
+                }else {
+                    self.location = "../login.html";
+                }
+
+            });
         });
         $submit.on('click',function () {
-            $('#system').submit();
+            $('#menu').submit();
         });
-        $('#system').form({
+        $('#menu').form({
             fields: {
-                systemName: {
-                    identifier  : 'systemName',
+                name: {
+                    identifier  : 'name',
                     rules: [
                         {
                             type   : 'empty',
-                            prompt : '请输入系统名称'
+                            prompt : '请输入菜单名称'
                         }
                     ]
                 },
-                systemHost: {
-                    identifier  : 'systemHost',
+                itemUri: {
+                    identifier  : 'itemUri',
                     rules: [
                         {
                             type   : 'empty',
-                            prompt : '请输入系统host'
+                            prompt : '请输入菜单请求路径'
                         }
                     ]
                 }
             },
             onSuccess:submitForm
         });
-        $('#system').submit(function(e){
+        $('#menu').submit(function(e){
             return false;
         });
         function submitForm() {
             var formData = $('.ui.form input').serializeArray();
-            $.post("/system-info/save-system-info",formData,function (data) {
+            formData.push({name:'itemType',value:'1'});
+            $.post("/auth/save-auth",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
                     swal({
