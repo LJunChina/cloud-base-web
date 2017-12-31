@@ -53,7 +53,6 @@ public class AuthorityController {
             }else {
                 params.put("available",YesOrNoEnum.NO.getCode());
             }
-            params.put("appName","cloud_mall");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity httpEntity = new HttpEntity(JSONObject.toJSONString(params),headers);
@@ -73,7 +72,7 @@ public class AuthorityController {
     @GetMapping(value = "/get-all-menus")
     public String getAllMenus(){
         try {
-            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,"cloud_mall").getBody();
+            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,"4b002121-9ac2-40c9-89a9-4db9687081cb").getBody();
             logger.info("result of the getAllMenus is :{}",result);
             return result;
         }catch (Exception e){

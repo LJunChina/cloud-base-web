@@ -22,7 +22,7 @@
 
 
 
-<div class="ui standard modal">
+<div class="ui standard modal" id="menu-modal">
     <div class="header">
         新增菜单
     </div>
@@ -89,7 +89,9 @@
         var $submit = $("#submit");
         $(".menu-add").on("click", function () {
             var a = $(this).attr("data-value");
-            $(".ui.modal.standard").modal("setting", "transition", a).modal("show");
+            //重置form
+            $('#menu')[0].reset();
+            $("#menu-modal").modal("setting", "transition", a).modal("show");
             $.getJSON('/system-info/get-system-info',{pageIndex:1,pageSize:99999},function (resp) {
                 if(resp && resp.code === '0000'){
                     var list = resp.data.list;

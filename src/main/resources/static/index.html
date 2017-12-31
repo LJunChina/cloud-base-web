@@ -20,27 +20,6 @@
         </a>
         <!--菜单-->
         <div class="ui accordion inverted">
-
-            <div class="title item">
-                <i class="ion-ios-cog titleIcon icon"></i> 系统管理 <i class="dropdown icon"></i>
-            </div>
-            <div class="content">
-                <a class="item" href="javascript:;" data-url="system_info.html">
-                    业务系统管理
-                </a>
-            </div>
-            <div class="title item">
-                <i class="ion-android-walk titleIcon icon"></i> 权限管理 <i class="dropdown icon"></i>
-            </div>
-            <div class="content">
-                <a class="item" href="javascript:;" data-url="auth/menu.html">
-                    菜单权限管理
-                </a>
-                <a class="item" href="javascript:;">
-                    操作权限管理
-                </a>
-            </div>
-
         </div>
         <!--收缩菜单-->
         <div class="ui dropdown item displaynone scrolling">
@@ -135,15 +114,6 @@
 <script src="dist/main.js"></script>
 <script type="application/javascript">
     $(function () {
-        $('.ui.menu a.item').on('click', function () {
-            $(this)
-                .addClass('active')
-                .siblings()
-                .removeClass('active');
-            var url = $(this).data("url");
-            var $content = $("#content");
-            $content.load(url);
-        });
         $.getJSON("/auth/get-all-menus",function (data) {
             if(data.code === '0000'){
                 console.log(data);
@@ -151,20 +121,33 @@
                 var $item = $(".ui.accordion.inverted");
                 $.each(resultData,function () {
                     $item.append('<div class="title item">\n' +
-                        '                <i class="ion-speedometer titleIcon icon"></i> '+this.item.name+' <i class="dropdown icon"></i>\n' +
+                        '                <i class="'+this.item.icon+' titleIcon icon"></i> '+this.item.name+' <i class="dropdown icon"></i>\n' +
                         '            </div>');
                     if(this.child){
+                        var html = "<div class=\"content\">";
                         $.each(this.child,function () {
-                            $item.append('<div class="content">\n' +
-                                '                <a class="item" href="javascript:;">'+this.name+'</a>\n' +
-                                '            </div>');
+                            var uri = this.itemUri;
+                            html += '<a class="item" href="javascript:;" data-url="'+ uri +'">'+this.name+'</a>';
                         });
+                        html += "</div>";
+                        $item.append(html);
                     }
+                });
+                $('.ui.menu a.item').on('click', function () {
+                    $(this)
+                        .addClass('active')
+                        .siblings()
+                        .removeClass('active');
+                    var url = $(this).data("url");
+                    var $content = $("#content");
+                    $content.html("");
+                    $content.load(url);
                 });
             }else {
                 self.location = 'login.html';
             }
         });
+
     });
 
 </script>
