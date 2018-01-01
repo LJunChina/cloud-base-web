@@ -72,7 +72,7 @@ public class AuthorityController {
     @GetMapping(value = "/get-all-menus")
     public String getAllMenus(){
         try {
-            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,"4b002121-9ac2-40c9-89a9-4db9687081cb").getBody();
+            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,"cloud_base").getBody();
             logger.info("result of the getAllMenus is :{}",result);
             return result;
         }catch (Exception e){
