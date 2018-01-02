@@ -1,5 +1,6 @@
 package com.cloud.base.web.web;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.base.web.dto.BaseRespDTO;
 import com.cloud.base.web.enums.ResultCode;
@@ -118,5 +119,26 @@ public class UserController {
         String result = this.restTemplate.getForEntity(Constant.GET_USER_IS_LOGIN,String.class,tokenCookie.getValue()).getBody();
         logger.info("this result of getUserIsLogin is : {}" ,result);
         return result;
+    }
+
+
+    /**
+     * 保存内部用户信息
+     * @param body
+     * @return
+     */
+    @PostMapping("/save-user")
+    public String saveUserInfo(@RequestBody String body){
+        logger.info("the params of saveUserInfo is :{}",body);
+        try {
+            /*User user = JSON.parseObject(body,User.class);
+            BaseRespDTO baseRespDTO = this.userService.saveUserInfo(user);*/
+            String result = "fds";
+            logger.info("this result of saveUserInfo is : {}" ,result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in saveUserInfo :",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
     }
 }

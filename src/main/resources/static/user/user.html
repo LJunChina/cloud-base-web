@@ -6,7 +6,7 @@
                 <h4 class="ui header" style="display: inline-block">
                     内部用户管理
                 </h4>
-                <button class="ui basic button use-add" style="display: inline-block;margin-left: 10px" data-value="horizontal flip">
+                <button class="ui basic button user-add" style="display: inline-block;margin-left: 10px" data-value="horizontal flip">
                     <i class="icon plus"></i>
                     新增内部用户
                 </button>
@@ -31,27 +31,39 @@
             <div class="ui segments">
                 <form class="ui form segment form4" id="user">
                     <div class="field">
-                        <label>角色名称</label>
-                        <input placeholder="角色名称" name="roleName" type="text">
+                        <label>用户名称(登录名)</label>
+                        <input placeholder="用户名称" name="userName" type="text">
                     </div>
-                    <!--<div class="field">
-                        <label>角色类型</label>
-                        <input placeholder="角色类型" name="roleType" type="text">
-                    </div>-->
+                    <div class="field">
+                        <label>真实姓名</label>
+                        <input placeholder="真实姓名" name="name" type="text">
+                    </div>
                     <div class="inline fields">
-                        <label>角色类型</label>
+                        <label>性别</label>
                         <div class="field">
                             <div class="ui radio checkbox">
-                                <input type="radio" name="roleType" checked="checked" value="00">
-                                <label>管理员</label>
+                                <input type="radio" name="sex" checked="checked" value="1">
+                                <label>男</label>
                             </div>
                         </div>
                         <div class="field">
                             <div class="ui radio checkbox">
-                                <input type="radio" name="roleType" value="01">
-                                <label>普通用户</label>
+                                <input type="radio" name="sex" value="0">
+                                <label>女</label>
                             </div>
                         </div>
+                    </div>
+                    <div class="field">
+                        <label>邮箱</label>
+                        <input placeholder="邮箱" name="email" type="text">
+                    </div>
+                    <div class="field">
+                        <label>身份证号</label>
+                        <input placeholder="身份证号" name="idCard" type="text">
+                    </div>
+                    <div class="field">
+                        <label>手机</label>
+                        <input placeholder="手机" name="mobile" type="text">
                     </div>
                     <div class="field">
                         <label>所属系统</label>
@@ -62,10 +74,6 @@
                             <div class="menu" tabindex="-1" id="system-data">
                             </div>
                         </div>
-                    </div>
-                    <div class="field">
-                        <label>角色描述信息</label>
-                        <input placeholder="角色描述信息" name="describe" type="text">
                     </div>
                 </form>
             </div>
@@ -94,6 +102,7 @@
         var $submit = $("#submit");
         $(".user-add").on("click", function () {
             var a = $(this).attr("data-value");
+            console.log(a)
             //重置form
             $('#user')[0].reset();
             $("#user-modal").modal("setting", "transition", a).modal("show");
@@ -116,21 +125,21 @@
         });
         $('#user').form({
             fields: {
-                name: {
-                    identifier  : 'roleName',
+                userName: {
+                    identifier  : 'userName',
                     rules: [
                         {
                             type   : 'empty',
-                            prompt : '请输入角色名称'
+                            prompt : '请输入用户名称'
                         }
                     ]
                 },
-                itemUri: {
-                    identifier  : 'roleType',
+                name: {
+                    identifier  : 'name',
                     rules: [
                         {
                             type   : 'empty',
-                            prompt : '请输入角色类型'
+                            prompt : '真实姓名'
                         }
                     ]
                 }
@@ -142,8 +151,7 @@
         });
         function submitForm() {
             var formData = $('.ui.form input').serializeArray();
-            formData.push({name:'itemType',value:'1'});
-            $.post("/role/save-role",formData,function (data) {
+            $.post("/user/save-user",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
                     swal({
