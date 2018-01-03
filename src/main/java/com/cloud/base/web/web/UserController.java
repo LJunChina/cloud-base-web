@@ -11,6 +11,9 @@ import com.google.code.kaptcha.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -124,16 +127,18 @@ public class UserController {
 
     /**
      * 保存内部用户信息
-     * @param body
+     * @param request
      * @return
      */
     @PostMapping("/save-user")
-    public String saveUserInfo(@RequestBody String body){
-        logger.info("the params of saveUserInfo is :{}",body);
+    public String saveUserInfo(HttpServletRequest request){
+        Map<String,String> params = ControllerUtil.getParamtersMap(request);
+        logger.info("the params of saveUserInfo is :{}",params);
         try {
-            /*User user = JSON.parseObject(body,User.class);
-            BaseRespDTO baseRespDTO = this.userService.saveUserInfo(user);*/
-            String result = "fds";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity entity = new HttpEntity(params,headers);
+            String result = this.restTemplate.postForEntity(Constant.SAVE_USER,entity,String.class).getBody();
             logger.info("this result of saveUserInfo is : {}" ,result);
             return result;
         }catch (Exception e){

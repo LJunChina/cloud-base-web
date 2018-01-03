@@ -151,7 +151,7 @@
         });
         function submitForm() {
             var formData = $('.ui.form input').serializeArray();
-            $.post("/user/save-user",formData,function (data) {
+            $.post("/save-user",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
                     swal({

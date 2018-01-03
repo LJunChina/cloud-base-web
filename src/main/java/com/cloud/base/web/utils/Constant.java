@@ -37,4 +37,6 @@ public final class Constant {
     public static final String GET_ALL_AUTHORITIES_BY_PAGE = USER_SERVICE + "/auth/get-all-auth?name={name}&pageIndex={pageIndex}&pageSize={pageSize}&appName={appName}&itemType={itemType}";
     /**角色信息分页查询*/
     public static final String GET_ALL_ROLE = USER_SERVICE + "/role/get-roles?roleName={roleName}&appId={appId}&pageIndex={pageIndex}&pageSize={pageSize}";
+    /**内部用户保存*/
+    public static final String SAVE_USER = USER_SERVICE + "/save-user";
 }
