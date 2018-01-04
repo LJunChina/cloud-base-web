@@ -1,7 +1,7 @@
 package com.cloud.base.web.web;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.base.web.config.LoginUserContext;
 import com.cloud.base.web.dto.BaseRespDTO;
 import com.cloud.base.web.enums.ResultCode;
 import com.cloud.base.web.utils.Constant;
@@ -78,11 +78,11 @@ public class UserController {
 
     /**
      * 用户详情查询
-     * @param userId
      * @return
      */
-    @GetMapping("/get-user-detail/{userId}")
-    public String getUserDetailById(@PathVariable(value = "userId") String userId){
+    @GetMapping("/get-user-detail")
+    public String getUserDetailById(){
+        String userId = LoginUserContext.getCurrentLoginUser().getUserId();
         String result = this.restTemplate.getForEntity(Constant.GET_USER_INFO_BY_ID,String.class,userId).getBody();
         logger.info("this result is : {}" ,result);
         return result;

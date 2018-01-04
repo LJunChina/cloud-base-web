@@ -67,24 +67,23 @@
                         </div>
                     </div>
                     <div class="ui dropdown item">
-                        Language <i class="dropdown icon"></i>
+                        <span id="user-name">管理员</span> <i class="dropdown icon"></i>
                         <div class="menu">
-                            <a class="item"><i class="united kingdom flag"></i>English</a>
-                            <a class="item"><i class="turkey flag"></i>Turkish</a>
-                            <a class="item"><i class="spain flag"></i>Spanish</a>
+                            <a class="item"><i class="united kingdom flag"></i>修改密码</a>
+                            <a class="item"><i class="turkey flag"></i>个人信息</a>
+                            <a class="item"><i class="spain flag"></i>退出登录</a>
                         </div>
                     </div>
-                    <div class="ui dropdown item">
-                        <img class="ui mini circular image" src="img/avatar/people/enid.png" alt="label-image" />
+                    <!--<div class="ui dropdown item">
+                        <span>管理员</span>
                         <div class="menu">
-                            <a class="item" href="mail.html">Inbox</a>
-                            <a class="item" href="profile.html">Profile</a>
-                            <a class="item" href="settings.html">Settings</a>
+                            <a class="item" href="mail.html">修改密码</a>
+                            <a class="item" href="profile.html">个人信息</a>
+                            <a class="item" href="settings.html">设置</a>
                             <div class="ui divider"></div>
-                            <a class="item">Need Help?</a>
-                            <a class="item" href="login.html">Sign Out</a>
+                            <a class="item" href="login.html">退出</a>
                         </div>
-                    </div>
+                    </div>-->
                     <a class="item labeled rightsidebar computer only">
                         <i class="ion-wrench large icon"></i>
                     </a>
@@ -116,7 +115,6 @@
     $(function () {
         $.getJSON("/auth/get-all-menus",function (data) {
             if(data.code === '0000'){
-                console.log(data);
                 var resultData = data.resultData;
                 var $item = $(".ui.accordion.inverted");
                 $.each(resultData,function () {
@@ -147,6 +145,16 @@
                 self.location = 'login.html';
             }
         });
+
+        //获取用户信息
+        $.getJSON("/get-user-detail",function (resp) {
+            console.log(resp);
+            if(resp.code === "0000"){
+                $("#user-name").html(resp.data.userName);
+            }else {
+                self.location = 'login.html';
+            }
+        })
 
     });
 

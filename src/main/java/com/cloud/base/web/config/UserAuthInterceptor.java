@@ -63,17 +63,18 @@ public class UserAuthInterceptor implements HandlerInterceptor {
         if(ResultCode.OK.getCode().equals(object.getString("code"))){
             logger.info("token result : {}",result);
             TokenInfo tokenInfo = JSONObject.parseObject(object.getString("data"),TokenInfo.class);
-            //存储用户登录上下文
-            LoginUser loginUser = new LoginUser();
-            loginUser.setUserId(tokenInfo.getUserId());
             //查询用户信息
-            String userStr = this.restTemplate.getForEntity(Constant.GET_USER_INFO_BY_ID,String.class,loginUser.getUserId()).getBody();
+            String userStr = this.restTemplate.getForEntity(Constant.GET_USER_INFO_BY_ID,String.class,tokenInfo.getUserId()).getBody();
             JSONObject userObject = JSONObject.parseObject(userStr);
             String tokenStr = userObject.getJSONObject("data").getString("loginToken");
             if(!tokenStr.equals(tokenId)){
                 redirect(response,isAjax,jsonResult);
                 return false;
             }
+            //存储用户登录上下文
+            LoginUser loginUser = new LoginUser();
+            loginUser.setUserId(tokenInfo.getUserId());
+            loginUser.setUserName(userObject.getJSONObject("data").getString("userName"));
             LoginUserContext.addLoginUserContext(loginUser);
             return true;
         }
@@ -82,7 +83,7 @@ public class UserAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
+        LoginUserContext.removeCurrentLoginUser();
     }
 
     @Override

@@ -23,4 +23,13 @@ public final class LoginUserContext {
     }
 
 
+    public static LoginUser getCurrentLoginUser(){
+        return userContext.get();
+    }
+
+    public static void removeCurrentLoginUser(){
+        userContext.remove();
+    }
+
+
 }
