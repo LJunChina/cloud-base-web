@@ -147,6 +147,63 @@
         factory(jQuery, jQuery.fn.dataTable);
     }
 })(window, document);
+function getPageIndex(aDataSet) {
+    var pageSize,pageIndex = 1;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'start'){
+            var start = this.value;
+            if(start === 0){
+                pageIndex = 1;
+            }else {
+                if(pageSize){
+                    pageIndex = start/pageSize + 1;
+                }
+            }
+        }
+    });
+    return pageIndex;
+}
+function getPageSize(aDataSet) {
+    var pageSize = 10;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    return pageSize;
+}
+function returnRoleData(sSource, aDataSet, fnCallback) {
+    $.ajax({
+        "dataType" : 'json',
+        "contentType": "application/json; charset=utf-8",
+        "type" : "get",
+        "url" : "/role/get-roles",
+        "data" :{
+            "pageSize": getPageSize(aDataSet),
+            "pageIndex":getPageIndex(aDataSet)
+        },
+        "success" : function(resp){
+            if(resp.code === '0000'){
+                fnCallback({
+                    "recordsTotal":resp.data.pages,
+                    "recordsFiltered":resp.data.total,
+                    "data":resp.data.list
+                });
+                result = resp.data.list;
+            }else {
+                self.location = "login.html";
+            }
+        },
+        "error":function () {
+            self.location = "login.html";
+        }
+    });
+}
 function returnData(sSource, aDataSet, fnCallback) {
     $.ajax({
         "dataType" : 'json',
@@ -202,7 +259,7 @@ function returnData(sSource, aDataSet, fnCallback) {
     });
 }
 $(document).ready(function () {
-    var option = {
+    var baseOption ={
         "pagingType": "full_numbers_icon",
         "serverSide": true,
         "ordering": false,
@@ -226,72 +283,216 @@ $(document).ready(function () {
             }
         },
         "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
-        "aoColumns" : [{
-            "mDataProp" : "userName",
-            "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
-            "sTitle" : "用户名称",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "name",
-            "sTitle" : "真实姓名",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "sex",
-            "sTitle" : "性别",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "status",
-            "sTitle" : "状态",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "email",
-            "sTitle" : "邮箱",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "idCard",
-            "sTitle" : "身份证",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "mobile",
-            "sTitle" : "手机号码",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "appName",
-            "sTitle" : "所属系统",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }, {
-            "mDataProp" : "appChn",
-            "sTitle" : "所属系统中文名",
-            "sDefaultContent" : "",
-            "sClass" : "center"
-        }],
-        "aoColumnDefs":[{
-            "aTargets":[2],"mRender":function(data,type,full){
-                if(data === "1"){
-                    return "男";
-                }
-                if(data === "2"){
-                    return "女";
-                }
-                return "未知";
-            }},{
-            "aTargets":[3],"mRender":function(data,type,full){
-                if(data === "00"){
-                    return "正常";
-                }
-                if(data === "01"){
-                    return "过期";
-                }
-                return "未知";
-            }
-        }]
+        "destroy" : true,//重载表格清空
+        "aoColumns":[],
+        "aoColumnDefs":[]
     };
-    $('.table').DataTable(option);
+    var userColumns = [{
+        "mDataProp" : "userName",
+        "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
+        "sTitle" : "用户名称",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "name",
+        "sTitle" : "真实姓名",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "sex",
+        "sTitle" : "性别",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "status",
+        "sTitle" : "状态",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "email",
+        "sTitle" : "邮箱",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "idCard",
+        "sTitle" : "身份证",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "mobile",
+        "sTitle" : "手机号码",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "appName",
+        "sTitle" : "所属系统",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "appChn",
+        "sTitle" : "所属系统中文名",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    },{
+        "mDataProp" : "id",
+        "sTitle" : "操作",
+        "sDefaultContent" : "",
+        "sClass" : "center",
+        "width":"25%"
+    }];
+    var roleColumns = [{
+        "mDataProp" : "id",
+        "sDefaultContent" : "",
+        "sTitle" : "选择",
+        "sClass" : "text-center"
+    },{
+        "mDataProp" : "roleName",
+        "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
+        "sTitle" : "系统角色名称",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "roleType",
+        "sTitle" : "角色类型",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "appName",
+        "sTitle" : "系统名称",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "appChn",
+        "sTitle" : "系统中文名称",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }, {
+        "mDataProp" : "describe",
+        "sTitle" : "角色描述信息",
+        "sDefaultContent" : "",
+        "sClass" : "center"
+    }];
+    var userDefColumns = [{
+        "aTargets":[2],"mRender":function(data,type,full){
+            if(data === "1"){
+                return "男";
+            }
+            if(data === "2"){
+                return "女";
+            }
+            return "未知";
+        }},{
+        "aTargets":[3],"mRender":function(data,type,full){
+            if(data === "00"){
+                return "正常";
+            }
+            if(data === "01"){
+                return "过期";
+            }
+            return "未知";
+        }
+    },{
+        "aTargets":[9],"mRender":function(data,type,full){
+
+            return "<div class=\"ui animated fade button allocation-role\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
+                "                                    <div class=\"visible content\">分配角色</div>" +
+                "                                    <div class=\"hidden content\">" +
+                "                                        分配角色" +
+                "                                    </div>" +
+                "                                </div>" +
+                "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                "                                    <div class=\"visible content\">删除</div>" +
+                "                                    <div class=\"hidden content\">" +
+                "                                        <i class=\"gray remove icon\"></i>" +
+                "                                    </div>" +
+                "                                </div>" +
+                "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                "                                    <div class=\"visible content\">编辑</div>" +
+                "                                    <div class=\"hidden content\">" +
+                "                                        <i class=\"gray edit icon\"></i>" +
+                "                                    </div>" +
+                "                                </div>" +
+                "<div class=\"ui vertical animated button query-user\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                "                                    <div class=\"visible content\">查看角色</div>" +
+                "                                    <div class=\"hidden content\">" +
+                "                                        <i class=\"gray search icon\"></i>" +
+                "                                    </div>" +
+                "                                </div>" ;
+        }
+    }];
+    var roleDefColumns = [{
+        "aTargets":[0],"mRender":function(data,type,full){
+            return "<div class=\"ui checkbox\">\n" +
+                "                                    <input type=\"checkbox\" class='user' value='"+data+"'>" +
+                "                                    <label class=\"coloring grey\"></label>" +
+                "                                </div>";
+        }
+    },{
+        "aTargets":[2],"mRender":function(data,type,full){
+            if(data === "00"){
+                return "管理员";
+            }
+            if(data === "01"){
+                return "普通用户";
+            }
+            return "未知";
+        }
+    }];
+    baseOption.aoColumns = userColumns;
+    baseOption.aoColumnDefs = userDefColumns;
+    //表格加载完成
+    baseOption.fnInitComplete = function (oSettings, json) {
+        $("div.allocation-role").on('click',function () {
+            //加载数据
+            baseOption.aoColumns = roleColumns;
+            baseOption.aoColumnDefs = roleDefColumns;
+            baseOption.fnInitComplete = null;
+            baseOption.fnServerData = returnRoleData;
+            console.log(baseOption);
+            $("#role_table").dataTable(baseOption);
+            var userId = $(this).data("id");
+            $("#role-modal").modal({
+                closable: false,
+                onDeny: function () {
+                },
+                onApprove: function () {
+                    //提交后的逻辑处理
+                    var checkedRole = $("input.user:checked");
+                    var roleIds = "";
+                    if(checkedRole && checkedRole.length > 0){
+                        $.each(checkedRole,function () {
+                            roleIds += $(this).val() + ",";
+                        });
+                        if(!roleIds || roleIds === ""){
+                            $.error("未选择任何用户!");
+                            return false;
+                        }
+                        //执行ajax请求
+                        $.post("/role/allocation-users",{userId:userId,roleIds:roleIds},function (resp) {
+                            if(!resp){
+                                //异常
+                                $.error("系统异常,请稍后再试!");
+                            }
+                            var resultData = JSON.parse(resp);
+                            if(resultData.code === "0000"){
+                                //正常
+                                $.success("处理成功!");
+                            }else if(resultData.code === "8001") {
+                                //未登录
+                                self.location = "/login.html";
+                            }else {
+                                //异常
+                                $.error(resultData.message);
+                            }
+                        });
+                    }else {
+                        $.error("未选择任何用户!");
+                        return false;
+                    }
+                }
+            }).modal("show").css({
+                width:'1200px',
+                margin:'200 auto!important'
+            });
+        })
+    };
+    $('#user_table').DataTable(baseOption);
 });

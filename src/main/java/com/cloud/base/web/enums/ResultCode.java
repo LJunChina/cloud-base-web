@@ -5,7 +5,7 @@ public enum ResultCode {
     FAIL("9000","处理失败"),
     ERROR("9999","服务器异常,请稍后再试"),
     INVALID_CODE("9013","验证码错误"),
-    LOGIN_EFFICACY("8000","登录失效");
+    LOGIN_EFFICACY("8001","登录失效");
 
 
     private String code;
