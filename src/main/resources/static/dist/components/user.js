@@ -283,7 +283,7 @@ $(document).ready(function () {
             }
         },
         "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
-        "destroy" : true,//重载表格清空
+        //"destroy" : true,//重载表格清空
         "aoColumns":[],
         "aoColumnDefs":[]
     };
@@ -441,13 +441,7 @@ $(document).ready(function () {
     //表格加载完成
     baseOption.fnInitComplete = function (oSettings, json) {
         $("div.allocation-role").on('click',function () {
-            //加载数据
-            baseOption.aoColumns = roleColumns;
-            baseOption.aoColumnDefs = roleDefColumns;
-            baseOption.fnInitComplete = null;
-            baseOption.fnServerData = returnRoleData;
-            console.log(baseOption);
-            $("#role_table").dataTable(baseOption);
+            $("#role_table").dataTable().api().ajax.reload();
             var userId = $(this).data("id");
             $("#role-modal").modal({
                 closable: false,
@@ -495,4 +489,10 @@ $(document).ready(function () {
         })
     };
     $('#user_table').DataTable(baseOption);
+    //加载角色数据
+    baseOption.aoColumns = roleColumns;
+    baseOption.aoColumnDefs = roleDefColumns;
+    baseOption.fnInitComplete = null;
+    baseOption.fnServerData = returnRoleData;
+    $("#role_table").dataTable(baseOption);
 });
