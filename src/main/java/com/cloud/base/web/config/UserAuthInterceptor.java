@@ -101,6 +101,7 @@ public class UserAuthInterceptor implements HandlerInterceptor {
     private void redirect(HttpServletResponse response,boolean isAjax,String jsonResult) throws IOException{
         logger.info("user login already disabled");
         if(isAjax){
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(jsonResult);
             return;
         }

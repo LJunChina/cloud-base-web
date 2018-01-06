@@ -411,6 +411,7 @@ $(document).ready(function () {
     $('#user_table').DataTable(userOption);
     function loadEvent(oSettings, json) {
         $("div.allocation").on('click',function () {
+            var roleId = $(this).data("id");
             $("#user_table").dataTable().api().ajax.reload();
             $("#user-modal").modal({
                 closable: false,
@@ -422,24 +423,32 @@ $(document).ready(function () {
                     var userIds = "";
                     if(checkedUser && checkedUser.length > 0){
                         $.each(checkedUser,function () {
-                            userIds += $(this).val();
-                        })
+                            userIds += $(this).val() + ",";
+                        });
+                        if(!userIds || userIds === ""){
+                            $.error("未选择任何用户!");
+                            return false;
+                        }
                         //执行ajax请求
-                        console.log(userIds);
-                        $.post("",{ids:userIds},function (resp) {
+                        $.post("/role/allocation-users",{userIds:userIds,roleId:roleId},function (resp) {
                             if(!resp){
                                 //异常
+                                $.error("系统异常,请稍后再试!");
                             }
-                            if(resp.code === "0000"){
+                            var resultData = JSON.parse(resp);
+                            if(resultData.code === "0000"){
                                 //正常
-                            }else if(resp.code === "") {
+                                $.success("处理成功!");
+                            }else if(resultData.code === "8000") {
                                 //未登录
+                                self.location = "/login.html";
                             }else {
                                 //异常
+                                $.error(resultData.message);
                             }
                         });
                     }else {
-                        alert("未选择任何用户")
+                        $.error("未选择任何用户!");
                         return false;
                     }
                 }

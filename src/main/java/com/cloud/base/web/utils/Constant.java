@@ -39,4 +39,6 @@ public final class Constant {
     public static final String GET_ALL_ROLE = USER_SERVICE + "/role/get-roles?roleName={roleName}&appId={appId}&pageIndex={pageIndex}&pageSize={pageSize}";
     /**内部用户保存*/
     public static final String SAVE_USER = USER_SERVICE + "/save-user";
+    /**角色分配用户*/
+    public static final String ALLOCATION_USERS = USER_SERVICE + "/role/allocation-users";
 }
