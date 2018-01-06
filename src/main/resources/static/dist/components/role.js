@@ -1,5 +1,4 @@
 
-//datatable page semantic datatable settings
 (function (window, document, undefined) {
     var factory = function ($, DataTable) {
         "use strict";
@@ -147,44 +146,45 @@
         factory(jQuery, jQuery.fn.dataTable);
     }
 })(window, document);
+function getPageIndex(aDataSet) {
+    var pageSize,pageIndex = 1;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'start'){
+            var start = this.value;
+            if(start === 0){
+                pageIndex = 1;
+            }else {
+                if(pageSize){
+                    pageIndex = start/pageSize + 1;
+                }
+            }
+        }
+    });
+    return pageIndex;
+}
+function getPageSize(aDataSet) {
+    var pageSize = 10;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    return pageSize;
+}
 function returnData(sSource, aDataSet, fnCallback) {
-    result = "dfgdf";
     $.ajax({
         "dataType" : 'json',
         "contentType": "application/json; charset=utf-8",
         "type" : "get",
         "url" : "/role/get-roles",
         "data" :{
-            "pageSize": function () {
-                var pageSize = 10;
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'length'){
-                        pageSize = this.value;
-                    }
-                });
-                return pageSize;
-            },
-            "pageIndex":function () {
-                var pageSize,pageIndex = 1;
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'length'){
-                        pageSize = this.value;
-                    }
-                });
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'start'){
-                        var start = this.value;
-                        if(start === 0){
-                            pageIndex = 1;
-                        }else {
-                            if(pageSize){
-                                pageIndex = start/pageSize + 1;
-                            }
-                        }
-                    }
-                });
-                return pageIndex;
-            }
+            "pageSize": getPageSize(aDataSet),
+            "pageIndex":getPageIndex(aDataSet)
         },
         "success" : function(resp){
             if(resp.code === '0000'){
@@ -194,6 +194,32 @@ function returnData(sSource, aDataSet, fnCallback) {
                     "data":resp.data.list
                 });
                 result = resp.data.list;
+            }else {
+                self.location = "login.html";
+            }
+        },
+        "error":function () {
+            self.location = "login.html";
+        }
+    });
+}
+function returnUserData(sSource, aDataSet, fnCallback) {
+    $.ajax({
+        "dataType" : 'json',
+        "contentType": "application/json; charset=utf-8",
+        "type" : "get",
+        "url" : "/get-user-list",
+        "data" :{
+            "pageSize": getPageSize(aDataSet),
+            "pageIndex":getPageIndex(aDataSet)
+        },
+        "success" : function(resp){
+            if(resp.code === '0000'){
+                fnCallback({
+                    "recordsTotal":resp.data.pages,
+                    "recordsFiltered":resp.data.total,
+                    "data":resp.data.list
+                });
             }else {
                 self.location = "login.html";
             }
@@ -253,6 +279,12 @@ $(document).ready(function () {
             "sTitle" : "角色描述信息",
             "sDefaultContent" : "",
             "sClass" : "center"
+        },{
+            "mDataProp" : "id",
+            "sTitle" : "操作",
+            "sDefaultContent" : "",
+            "sClass" : "center",
+            "width":"25%"
         }],
         "aoColumnDefs":[{
             "aTargets":[1],"mRender":function(data,type,full){
@@ -264,7 +296,157 @@ $(document).ready(function () {
                 }
                 return "未知";
             }
+        },{
+            "aTargets":[5],"mRender":function(data,type,full){
+
+                return "<div class=\"ui animated fade button allocation\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
+                    "                                    <div class=\"visible content\">分配用户</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        分配用户" +
+                    "                                    </div>" +
+                    "                                </div>" +
+                    "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                    "                                    <div class=\"visible content\">删除</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        <i class=\"gray remove icon\"></i>" +
+                    "                                    </div>" +
+                    "                                </div>" +
+                    "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                    "                                    <div class=\"visible content\">编辑</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        <i class=\"gray edit icon\"></i>" +
+                    "                                    </div>" +
+                    "                                </div>" +
+                    "<div class=\"ui vertical animated button query-user\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+                    "                                    <div class=\"visible content\">查看用户</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        <i class=\"gray search icon\"></i>" +
+                    "                                    </div>" +
+                    "                                </div>" ;
+            }
+        }],
+        "fnInitComplete":loadEvent
+    };
+    $('#data_table').DataTable(option);
+    //加载用户列表数据
+    var userOption = {
+        "pagingType": "full_numbers_icon",
+        "serverSide": true,
+        "ordering": false,
+        "fnServerData":returnUserData,
+        "searching": false,
+        "oLanguage": { //国际化配置
+            "sProcessing": "正在获取数据，请稍后...",
+            "sLengthMenu": "显示 _MENU_ 条",
+            "sZeroRecords": "没有您要搜索的内容",
+            "sInfo": " _START_ 到  _END_ 条 总记录数 _TOTAL_ 条",
+            "sInfoEmpty": "记录数为0",
+            "sInfoFiltered": "(总页数 _MAX_ 页)",
+            "sInfoPostFix": "",
+            "sSearch": "搜索",
+            "sUrl": "",
+            "oPaginate": {
+                "sFirst": "第一页",
+                "sPrevious": "上一页",
+                "sNext": "下一页",
+                "sLast": "最后一页"
+            }
+        },
+        "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
+        "aoColumns" : [{
+            "mDataProp" : "id",
+            "sDefaultContent" : "",
+            "sTitle" : "选择",
+            "sClass" : "text-center"
+        },{
+            "mDataProp" : "userName",
+            "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
+            "sTitle" : "用户名称",
+            "sClass" : "text-center"
+        }, {
+            "mDataProp" : "name",
+            "sTitle" : "真实姓名",
+            "sDefaultContent" : "",
+            "sClass" : "text-center"
+        }, {
+            "mDataProp" : "status",
+            "sTitle" : "状态",
+            "sDefaultContent" : "",
+            "sClass" : "text-center"
+        }, {
+            "mDataProp" : "email",
+            "sTitle" : "邮箱",
+            "sDefaultContent" : "",
+            "sClass" : "text-center"
+        }, {
+            "mDataProp" : "appName",
+            "sTitle" : "所属系统",
+            "sDefaultContent" : "",
+            "sClass" : "text-center"
+        }, {
+            "mDataProp" : "appChn",
+            "sTitle" : "所属系统中文名",
+            "sDefaultContent" : "",
+            "sClass" : "text-center"
+        }],
+        "aoColumnDefs":[{
+            "aTargets":[0],"mRender":function(data,type,full){
+                return "<div class=\"ui checkbox\">\n" +
+                    "                                    <input type=\"checkbox\" class='user' value='"+data+"'>" +
+                    "                                    <label class=\"coloring grey\"></label>" +
+                    "                                </div>";
+            }
+        },{
+            "aTargets":[3],"mRender":function(data,type,full){
+                if(data === "00"){
+                    return "正常";
+                }
+                if(data === "01"){
+                    return "过期";
+                }
+                return "未知";
+            }
         }]
     };
-    $('.table').DataTable(option);
+    $('#user_table').DataTable(userOption);
+    function loadEvent(oSettings, json) {
+        $("div.allocation").on('click',function () {
+            $("#user_table").dataTable().api().ajax.reload();
+            $("#user-modal").modal({
+                closable: false,
+                onDeny: function () {
+                },
+                onApprove: function () {
+                   //提交后的逻辑处理
+                    var checkedUser = $("input.user:checked");
+                    var userIds = "";
+                    if(checkedUser && checkedUser.length > 0){
+                        $.each(checkedUser,function () {
+                            userIds += $(this).val();
+                        })
+                        //执行ajax请求
+                        console.log(userIds);
+                        $.post("",{ids:userIds},function (resp) {
+                            if(!resp){
+                                //异常
+                            }
+                            if(resp.code === "0000"){
+                                //正常
+                            }else if(resp.code === "") {
+                                //未登录
+                            }else {
+                                //异常
+                            }
+                        });
+                    }else {
+                        alert("未选择任何用户")
+                        return false;
+                    }
+                }
+            }).modal("show").css({
+                width:'1200px',
+                margin:'200 auto!important'
+            });
+        })
+    }
 });

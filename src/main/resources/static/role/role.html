@@ -82,9 +82,27 @@
     </div>
 </div>
 
+<div class="ui standard modal" id="user-modal">
+    <div class="header">
+        用户列表
+    </div>
+    <div style="margin: 16px;padding: 1px">
+        <table id="user_table" class="ui compact selectable striped celled table tablet stackable" cellspacing="0" width="100%">
+        </table>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            关闭
+        </div>
+        <div class="ui right positive labeled icon button" id="allocation">
+            提交
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 <script src="../libs/datatable/jquery.dataTables.js"></script>
-<script src="../dist/components/role.js"></script>
 <script src="../libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="../dist/components/role.js"></script>
 <script type="application/javascript">
     $(function () {
         $(".ui.dropdown").dropdown({

@@ -296,9 +296,7 @@
         factory(jQuery, jQuery.fn.dataTable);
     }
 })(window, document);
-var result;
 function returnData(sSource, aDataSet, fnCallback) {
-    result = "dfgdf";
     $.ajax({
         "dataType" : 'json',
         "contentType": "application/json; charset=utf-8",
@@ -306,36 +304,8 @@ function returnData(sSource, aDataSet, fnCallback) {
         "url" : "/auth/get-all-auth",
         "data" :{
             "itemType":"1",
-            "pageSize": function () {
-                var pageSize = 10;
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'length'){
-                        pageSize = this.value;
-                    }
-                });
-                return pageSize;
-            },
-            "pageIndex":function () {
-                var pageSize,pageIndex = 1;
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'length'){
-                        pageSize = this.value;
-                    }
-                });
-                $.each(aDataSet,function () {
-                    if(this.name && this.name === 'start'){
-                        var start = this.value;
-                        if(start === 0){
-                            pageIndex = 1;
-                        }else {
-                            if(pageSize){
-                                pageIndex = start/pageSize + 1;
-                            }
-                        }
-                    }
-                });
-                return pageIndex;
-            }
+            "pageSize": getPageSize(aDataSet),
+            "pageIndex":getPageIndex(aDataSet)
         },
         "success" : function(resp){
             if(resp.code === '0000'){
@@ -353,6 +323,36 @@ function returnData(sSource, aDataSet, fnCallback) {
             self.location = "login.html";
         }
     });
+}
+function getPageIndex(aDataSet) {
+    var pageSize,pageIndex = 1;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'start'){
+            var start = this.value;
+            if(start === 0){
+                pageIndex = 1;
+            }else {
+                if(pageSize){
+                    pageIndex = start/pageSize + 1;
+                }
+            }
+        }
+    });
+    return pageIndex;
+}
+function getPageSize(aDataSet) {
+    var pageSize = 10;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    return pageSize;
 }
 $(document).ready(function () {
     var option = {
