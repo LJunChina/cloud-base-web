@@ -484,7 +484,7 @@ $(document).ready(function () {
                 }
             }).modal("show").css({
                 width:'1200px',
-                margin:'200 auto!important'
+                "margin-left":'-38%'
             });
         })
     };

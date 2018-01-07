@@ -203,13 +203,14 @@ function returnData(sSource, aDataSet, fnCallback) {
         }
     });
 }
-function returnUserData(sSource, aDataSet, fnCallback) {
+function returnAuthData(sSource, aDataSet, fnCallback) {
     $.ajax({
         "dataType" : 'json',
         "contentType": "application/json; charset=utf-8",
         "type" : "get",
-        "url" : "/get-user-list",
+        "url" : "/auth/get-all-auth",
         "data" :{
+            "itemType":"1",
             "pageSize": getPageSize(aDataSet),
             "pageIndex":getPageIndex(aDataSet)
         },
@@ -284,7 +285,7 @@ $(document).ready(function () {
             "sTitle" : "操作",
             "sDefaultContent" : "",
             "sClass" : "center",
-            "width":"25%"
+            "width":"30%"
         }],
         "aoColumnDefs":[{
             "aTargets":[1],"mRender":function(data,type,full){
@@ -300,11 +301,17 @@ $(document).ready(function () {
             "aTargets":[5],"mRender":function(data,type,full){
 
                 return "<div class=\"ui animated fade button allocation\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
-                    "                                    <div class=\"visible content\">分配用户</div>" +
+                    "                                    <div class=\"visible content\">分配菜单</div>" +
                     "                                    <div class=\"hidden content\">" +
-                    "                                        分配用户" +
+                    "                                        分配菜单" +
                     "                                    </div>" +
                     "                                </div>" +
+                    "<div class=\"ui animated fade button allocation-op\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
+                    "                                    <div class=\"visible content\">分配操作</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        分配操作" +
+                    "                                    </div>" +
+                    "                                </div>"+
                     "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
                     "                                    <div class=\"visible content\">删除</div>" +
                     "                                    <div class=\"hidden content\">" +
@@ -329,11 +336,11 @@ $(document).ready(function () {
     };
     $('#data_table').DataTable(option);
     //加载用户列表数据
-    var userOption = {
+    var authOption = {
         "pagingType": "full_numbers_icon",
         "serverSide": true,
         "ordering": false,
-        "fnServerData":returnUserData,
+        "fnServerData":returnAuthData,
         "searching": false,
         "oLanguage": { //国际化配置
             "sProcessing": "正在获取数据，请稍后...",
@@ -359,35 +366,30 @@ $(document).ready(function () {
             "sTitle" : "选择",
             "sClass" : "text-center"
         },{
-            "mDataProp" : "userName",
-            "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
-            "sTitle" : "用户名称",
-            "sClass" : "text-center"
-        }, {
             "mDataProp" : "name",
-            "sTitle" : "真实姓名",
-            "sDefaultContent" : "",
-            "sClass" : "text-center"
+            "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
+            "sTitle" : "菜单名称",
+            "sClass" : "center"
         }, {
-            "mDataProp" : "status",
-            "sTitle" : "状态",
+            "mDataProp" : "itemUri",
+            "sTitle" : "请求路径",
             "sDefaultContent" : "",
-            "sClass" : "text-center"
+            "sClass" : "center"
         }, {
-            "mDataProp" : "email",
-            "sTitle" : "邮箱",
+            "mDataProp" : "parentName",
+            "sTitle" : "父级菜单名称",
             "sDefaultContent" : "",
-            "sClass" : "text-center"
+            "sClass" : "center"
         }, {
             "mDataProp" : "appName",
             "sTitle" : "所属系统",
             "sDefaultContent" : "",
-            "sClass" : "text-center"
-        }, {
-            "mDataProp" : "appChn",
-            "sTitle" : "所属系统中文名",
+            "sClass" : "center"
+        },{
+            "mDataProp" : "icon",
+            "sTitle" : "菜单图标样式",
             "sDefaultContent" : "",
-            "sClass" : "text-center"
+            "sClass" : "center"
         }],
         "aoColumnDefs":[{
             "aTargets":[0],"mRender":function(data,type,full){
@@ -396,19 +398,9 @@ $(document).ready(function () {
                     "                                    <label class=\"coloring grey\"></label>" +
                     "                                </div>";
             }
-        },{
-            "aTargets":[3],"mRender":function(data,type,full){
-                if(data === "00"){
-                    return "正常";
-                }
-                if(data === "01"){
-                    return "过期";
-                }
-                return "未知";
-            }
         }]
     };
-    $('#user_table').DataTable(userOption);
+    $('#user_table').DataTable(authOption);
     function loadEvent(oSettings, json) {
         $("div.allocation").on('click',function () {
             var roleId = $(this).data("id");
@@ -420,17 +412,17 @@ $(document).ready(function () {
                 onApprove: function () {
                    //提交后的逻辑处理
                     var checkedUser = $("input.user:checked");
-                    var userIds = "";
+                    var authIds = "";
                     if(checkedUser && checkedUser.length > 0){
                         $.each(checkedUser,function () {
-                            userIds += $(this).val() + ",";
+                            authIds += $(this).val() + ",";
                         });
-                        if(!userIds || userIds === ""){
-                            $.error("未选择任何用户!");
+                        if(!authIds || authIds === ""){
+                            $.error("未选择任何资源!");
                             return false;
                         }
                         //执行ajax请求
-                        $.post("/role/allocation-users",{userIds:userIds,roleId:roleId},function (resp) {
+                        $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId},function (resp) {
                             if(!resp){
                                 //异常
                                 $.error("系统异常,请稍后再试!");
@@ -454,7 +446,7 @@ $(document).ready(function () {
                 }
             }).modal("show").css({
                 width:'1200px',
-                margin:'200 auto!important'
+                "margin-left":'-38%'
             });
         })
     }

@@ -113,4 +113,26 @@ public class AuthorityController {
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }
+
+    /**
+     * 角色权限分配
+     * @param roleId
+     * @param authIds
+     * @return
+     */
+    @PostMapping(value = "/allocation-auth")
+    public String allocationAuth(@RequestParam(value = "roleId")String roleId,@RequestParam(value = "authIds")String authIds){
+        logger.info("params of allocationAuth,roleId:{},authIds:{}",roleId,authIds);
+        try {
+            MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+            params.add("roleId",roleId);
+            params.add("authIds",authIds);
+            String result = this.restTemplate.postForEntity(Constant.ALLOCATION_AUTH,params,String.class).getBody();
+            logger.info("result of allocationAuth:{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in allocationAuth",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
 }

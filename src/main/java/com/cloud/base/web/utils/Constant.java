@@ -41,4 +41,6 @@ public final class Constant {
     public static final String SAVE_USER = USER_SERVICE + "/save-user";
     /**角色分配用户*/
     public static final String ALLOCATION_USERS = USER_SERVICE + "/role/allocation-users";
+    /**角色权限分配*/
+    public static final String ALLOCATION_AUTH = USER_SERVICE + "/auth/allocation-auth";
 }
