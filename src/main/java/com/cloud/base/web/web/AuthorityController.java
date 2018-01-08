@@ -1,7 +1,9 @@
 package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.base.web.config.LoginUserContext;
 import com.cloud.base.web.enums.YesOrNoEnum;
+import com.cloud.base.web.model.LoginUser;
 import com.cloud.base.web.utils.ControllerUtil;
 import com.cloud.base.web.utils.EmptyChecker;
 import com.cloud.base.web.dto.BaseRespDTO;
@@ -34,6 +36,8 @@ import java.util.Map;
 public class AuthorityController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorityController.class);
+
+    private static final String SYSTEM_STR = "cloud_base";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -72,7 +76,9 @@ public class AuthorityController {
     @GetMapping(value = "/get-all-menus")
     public String getAllMenus(){
         try {
-            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,"cloud_base").getBody();
+            //获取当前登录用户
+            LoginUser loginUser = LoginUserContext.getCurrentLoginUser();
+            String result = this.restTemplate.getForEntity(Constant.GET_ALL_MENUS,String.class,SYSTEM_STR,loginUser.getUserId()).getBody();
             logger.info("result of the getAllMenus is :{}",result);
             return result;
         }catch (Exception e){

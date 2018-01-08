@@ -28,7 +28,7 @@ public final class Constant {
     /**用户是否登录*/
     public static final String GET_USER_IS_LOGIN = USER_SERVICE + "/is-login/{tokenId}";
     /**获取系统菜单*/
-    public static final String GET_ALL_MENUS = USER_SERVICE + "/auth/get-all-menus/{appName}";
+    public static final String GET_ALL_MENUS = USER_SERVICE + "/auth/get-all-menus/{appName}/{userId}";
     /**业务系统分页查询*/
     public static final String GET_SYSTEM_INFO_BY_NAME = USER_SERVICE + "/system-info/get-system-info?systemName={systemName}&pageSize={pageSize}&pageIndex={pageIndex}";
     /**保存业务系统信息接口*/
