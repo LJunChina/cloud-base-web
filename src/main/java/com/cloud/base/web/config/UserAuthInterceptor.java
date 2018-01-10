@@ -19,6 +19,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -69,6 +71,18 @@ public class UserAuthInterceptor implements HandlerInterceptor {
             String tokenStr = userObject.getJSONObject("data").getString("loginToken");
             if(!tokenStr.equals(tokenId)){
                 redirect(response,isAjax,jsonResult);
+                return false;
+            }
+            //排除配置不包含的
+            //查询权限信息
+            Map<String,String> params = new HashMap<>();
+            params.put("userId",tokenInfo.getUserId());
+            params.put("appId","1");
+            params.put("uri",request.getRequestURI());
+            String privilegeCheck = this.restTemplate.getForEntity(Constant.GET_USER_PRIVILEGE,String.class,params).getBody();
+            BaseRespDTO resultCheck = JSONObject.parseObject(privilegeCheck,BaseRespDTO.class);
+            if(EmptyChecker.isEmpty(resultCheck) || !ResultCode.OK.getCode().equals(resultCheck.getCode())){
+                redirect(response,isAjax,privilegeCheck);
                 return false;
             }
             //存储用户登录上下文
