@@ -1,10 +1,10 @@
 package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cloud.base.web.dto.BaseRespDTO;
-import com.cloud.base.web.enums.ResultCode;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.base.web.utils.ControllerUtil;
+import com.cloud.common.dto.BaseRespDTO;
+import com.cloud.common.enums.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,13 +2,13 @@ package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.base.web.config.LoginUserContext;
-import com.cloud.base.web.enums.YesOrNoEnum;
 import com.cloud.base.web.model.LoginUser;
 import com.cloud.base.web.utils.ControllerUtil;
-import com.cloud.base.web.utils.EmptyChecker;
-import com.cloud.base.web.dto.BaseRespDTO;
-import com.cloud.base.web.enums.ResultCode;
 import com.cloud.base.web.utils.Constant;
+import com.cloud.common.dto.BaseRespDTO;
+import com.cloud.common.enums.ResultCode;
+import com.cloud.common.enums.YesOrNoEnum;
+import com.cloud.common.util.EmptyChecker;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

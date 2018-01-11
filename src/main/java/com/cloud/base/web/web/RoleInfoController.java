@@ -1,8 +1,8 @@
 package com.cloud.base.web.web;
 
-import com.cloud.base.web.dto.BaseRespDTO;
-import com.cloud.base.web.enums.ResultCode;
 import com.cloud.base.web.utils.Constant;
+import com.cloud.common.dto.BaseRespDTO;
+import com.cloud.common.enums.ResultCode;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

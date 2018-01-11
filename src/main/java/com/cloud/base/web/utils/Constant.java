@@ -43,4 +43,6 @@ public final class Constant {
     public static final String ALLOCATION_USERS = USER_SERVICE + "/role/allocation-users";
     /**角色权限分配*/
     public static final String ALLOCATION_AUTH = USER_SERVICE + "/auth/allocation-auth";
+    /**获取用户权限信息*/
+    public static final String GET_USER_PRIVILEGE = USER_SERVICE + "/auth/check-privilege?userId={userId}&appId={appId}&uri={uri}";
 }

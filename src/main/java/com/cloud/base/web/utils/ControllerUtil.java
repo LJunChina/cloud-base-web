@@ -1,5 +1,7 @@
 package com.cloud.base.web.utils;
 
+import com.cloud.common.util.EmptyChecker;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public final class ControllerUtil {
         Map<String,String> resultMap = new HashMap<>();
         Set<Map.Entry<String, String[]>> entries =  mapArray.entrySet();
         for (Map.Entry<String,String[]> entry : entries){
-            resultMap.put(entry.getKey(),EmptyChecker.isEmpty(entry) ? null : entry.getValue()[0]);
+            resultMap.put(entry.getKey(), EmptyChecker.isEmpty(entry) ? null : entry.getValue()[0]);
         }
         return resultMap;
     }

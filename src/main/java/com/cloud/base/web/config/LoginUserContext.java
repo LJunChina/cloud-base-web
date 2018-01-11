@@ -2,7 +2,7 @@ package com.cloud.base.web.config;
 
 import com.cloud.base.web.exception.UserAuthException;
 import com.cloud.base.web.model.LoginUser;
-import com.cloud.base.web.utils.EmptyChecker;
+import com.cloud.common.util.EmptyChecker;
 
 /**
  * 当前登录用户上下文
