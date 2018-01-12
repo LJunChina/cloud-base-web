@@ -4,7 +4,7 @@ buildscript {
 	}
 	repositories {
 		maven {
-			url 'http://maven.aliyun.com/nexus/content/groups/public/'
+			url 'http://115.159.152.121:8080/nexus/content/groups/public/'
 		}
 	}
 	dependencies {
@@ -22,7 +22,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	maven {
-		url 'http://localhost:8080/nexus/content/groups/public/'
+		url 'http://115.159.152.121:8080/nexus/content/groups/public/'
 	}
 }
 
@@ -34,9 +34,8 @@ ext {
 dependencies {
 	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
 	compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
-	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('com.cloud:cloud-sso-client:1.0-SNAPSHOT')
 	compile('com.github.penggle:kaptcha:2.3.2')
-	compile('com.cloud:common:1.0-SNAPSHOT')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

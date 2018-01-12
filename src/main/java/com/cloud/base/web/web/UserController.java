@@ -1,7 +1,7 @@
 package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cloud.base.web.config.LoginUserContext;
+import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.base.web.utils.ControllerUtil;
 import com.cloud.common.dto.BaseRespDTO;
