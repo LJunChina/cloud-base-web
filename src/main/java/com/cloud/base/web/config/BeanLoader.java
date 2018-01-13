@@ -1,8 +1,8 @@
 package com.cloud.base.web.config;
 
-import com.cloud.base.sso.filter.UserAuthFilter;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,9 @@ import java.util.Properties;
  */
 @Configuration
 public class BeanLoader {
+
+    @Autowired
+    private Filter userAuthFilter;
     @Bean
     public Config getConfig(){
         Properties properties = new Properties();
@@ -40,15 +43,11 @@ public class BeanLoader {
     @Bean
     public FilterRegistrationBean registerUserAuthFilter() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(userAuthFilter());
+        registration.setFilter(userAuthFilter);
         registration.addUrlPatterns("*.html");
         registration.addInitParameter("excludeUrl", "/login.html");
         registration.setName("userAuthFilter");
         return registration;
     }
 
-    @Bean(name = "userAuthFilter")
-    public Filter userAuthFilter() {
-        return new UserAuthFilter();
-    }
 }
