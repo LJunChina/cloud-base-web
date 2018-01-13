@@ -25,6 +25,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(getUserAuthInterceptor())
                 .addPathPatterns("/**").excludePathPatterns("/user-login"
                 ,"/get-public-key"
-                ,"/captcha-image");
+                ,"/index"
+                ,"/captcha-image","/error");
     }
+
 }

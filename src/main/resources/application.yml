@@ -9,3 +9,7 @@ eureka:
   client:
     service-url:
       defaultZone : http://localhost:8000/eureka
+sso:
+  domain : http://user.joninfo.cn:8020/login.html
+  appName : user-app
+  appUrl : http://user.joninfo.cn:8020/index.html

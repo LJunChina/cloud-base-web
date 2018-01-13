@@ -55,9 +55,10 @@ public class UserController {
         String result = this.restTemplate.postForEntity(Constant.USER_LOGIN,params,String.class).getBody();
         logger.info("this result is : {}" ,result);
         JSONObject object = JSONObject.parseObject(result);
-        if("0000".equals(object.getString("code"))){
+        if(ResultCode.OK.getCode().equals(object.getString("code"))){
             String tokenId = object.getString("data");
             Cookie cookie = new Cookie("tokenId",tokenId);
+            cookie.setDomain("joninfo.cn");
             cookie.setPath("/");
             cookie.setMaxAge(15*60);
             response.addCookie(cookie);
