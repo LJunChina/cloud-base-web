@@ -34,7 +34,7 @@ public final class Constant {
     /**保存业务系统信息接口*/
     public static final String SAVE_SYSTEM_INFO = USER_SERVICE + "/system-info/save-system-info";
     /**权限信息分页查询*/
-    public static final String GET_ALL_AUTHORITIES_BY_PAGE = USER_SERVICE + "/auth/get-all-auth?name={name}&pageIndex={pageIndex}&pageSize={pageSize}&appName={appName}&itemType={itemType}";
+    public static final String GET_ALL_AUTHORITIES_BY_PAGE = USER_SERVICE + "/auth/get-all-auth?name={name}&pageIndex={pageIndex}&pageSize={pageSize}&appName={appName}&itemType={itemType}&roleId={roleId}";
     /**角色信息分页查询*/
     public static final String GET_ALL_ROLE = USER_SERVICE + "/role/get-roles?roleName={roleName}&appId={appId}&pageIndex={pageIndex}&pageSize={pageSize}";
     /**内部用户保存*/

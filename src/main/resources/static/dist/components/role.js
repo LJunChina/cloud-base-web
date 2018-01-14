@@ -146,6 +146,7 @@
         factory(jQuery, jQuery.fn.dataTable);
     }
 })(window, document);
+var roleId = null;
 function getPageIndex(aDataSet) {
     var pageSize,pageIndex = 1;
     $.each(aDataSet,function () {
@@ -204,6 +205,7 @@ function returnData(sSource, aDataSet, fnCallback) {
     });
 }
 function returnAuthData(sSource, aDataSet, fnCallback) {
+    console.log(aDataSet);
     $.ajax({
         "dataType" : 'json',
         "contentType": "application/json; charset=utf-8",
@@ -211,6 +213,7 @@ function returnAuthData(sSource, aDataSet, fnCallback) {
         "url" : "/auth/get-all-auth",
         "data" :{
             "itemType":"1",
+            "roleId":roleId,
             "pageSize": getPageSize(aDataSet),
             "pageIndex":getPageIndex(aDataSet)
         },
@@ -393,7 +396,13 @@ $(document).ready(function () {
         }],
         "aoColumnDefs":[{
             "aTargets":[0],"mRender":function(data,type,full){
-                return "<div class=\"ui checkbox\">\n" +
+               if(full.selected && full.selected === '1'){
+                   return "<div class=\"ui checkbox\">" +
+                       "                                    <input type=\"checkbox\" class='user' checked='checked' value='"+data+"'>" +
+                       "                                    <label class=\"coloring grey\"></label>" +
+                       "                                </div>";
+               }
+                return "<div class=\"ui checkbox\">" +
                     "                                    <input type=\"checkbox\" class='user' value='"+data+"'>" +
                     "                                    <label class=\"coloring grey\"></label>" +
                     "                                </div>";
@@ -403,7 +412,8 @@ $(document).ready(function () {
     $('#user_table').DataTable(authOption);
     function loadEvent(oSettings, json) {
         $("div.allocation").on('click',function () {
-            var roleId = $(this).data("id");
+            roleId = $(this).data("id");
+            //重新加载数据
             $("#user_table").dataTable().api().ajax.reload();
             $("#user-modal").modal({
                 closable: false,
@@ -421,8 +431,8 @@ $(document).ready(function () {
                             $.error("未选择任何资源!");
                             return false;
                         }
-                        //执行ajax请求
-                        $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId},function (resp) {
+                        //执行ajax请求，菜单
+                        $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId,itemType:'1'},function (resp) {
                             if(!resp){
                                 //异常
                                 $.error("系统异常,请稍后再试!");

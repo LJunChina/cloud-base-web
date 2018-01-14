@@ -101,9 +101,10 @@ public class AuthorityController {
                                           @RequestParam(value = "pageIndex",defaultValue = "1")Integer pageIndex,
                                           @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
                                           @RequestParam(value = "appName",defaultValue = StringUtils.EMPTY)String appName,
-                                          @RequestParam(value = "itemType",defaultValue = StringUtils.EMPTY)String itemType){
-        logger.info("the params of getAllAuthoritiesByPage,name:{},pageIndex:{},pageSize:{},appName:{},itemType:{}"
-                ,name,pageIndex,pageSize,appName,itemType);
+                                          @RequestParam(value = "itemType",defaultValue = StringUtils.EMPTY)String itemType,
+                                          @RequestParam(value = "roleId",defaultValue = StringUtils.EMPTY)String roleId){
+        logger.info("the params of getAllAuthoritiesByPage,name:{},pageIndex:{},pageSize:{},appName:{},itemType:{},roleId:{}"
+                ,name,pageIndex,pageSize,appName,itemType,roleId);
         try {
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
@@ -111,6 +112,7 @@ public class AuthorityController {
             params.put("pageSize",pageSize);
             params.put("appName",appName);
             params.put("itemType",itemType);
+            params.put("roleId",roleId);
             String result = this.restTemplate.getForEntity(Constant.GET_ALL_AUTHORITIES_BY_PAGE,String.class,params).getBody();
             logger.info("result of the getAllAuthoritiesByPage is :{}",result);
             return result;
@@ -127,12 +129,14 @@ public class AuthorityController {
      * @return
      */
     @PostMapping(value = "/allocation-auth")
-    public String allocationAuth(@RequestParam(value = "roleId")String roleId,@RequestParam(value = "authIds")String authIds){
+    public String allocationAuth(@RequestParam(value = "roleId")String roleId,
+                                 @RequestParam(value = "authIds")String authIds,@RequestParam(value = "itemType")String itemType){
         logger.info("params of allocationAuth,roleId:{},authIds:{}",roleId,authIds);
         try {
             MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
             params.add("roleId",roleId);
             params.add("authIds",authIds);
+            params.add("itemType",itemType);
             String result = this.restTemplate.postForEntity(Constant.ALLOCATION_AUTH,params,String.class).getBody();
             logger.info("result of allocationAuth:{}",result);
             return result;
