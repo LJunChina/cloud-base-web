@@ -99,13 +99,14 @@
 <script src="dist/main.js"></script>
 <script type="application/javascript">
     $(function () {
+        //拉取菜单数据
         $.getJSON("/auth/get-all-menus",function (data) {
             if(data.code === '0000'){
                 var resultData = data.resultData;
                 var $item = $(".ui.accordion.inverted");
                 $.each(resultData,function () {
                     $item.append('<div class="title item">\n' +
-                        '                <i class="'+this.item.icon+' titleIcon icon"></i> '+this.item.name+' <i class="dropdown icon"></i>\n' +
+                        '                <i class="'+this.icon+' titleIcon icon"></i> '+this.name+' <i class="dropdown icon"></i>\n' +
                         '            </div>');
                     if(this.child){
                         var html = "<div class=\"content\">";
