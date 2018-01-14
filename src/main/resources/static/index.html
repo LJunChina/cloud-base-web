@@ -126,7 +126,13 @@
                     var url = $(this).data("url");
                     var $content = $("#content");
                     $content.html("");
-                    $content.load(url);
+                    $content.load(url,null,function(response,status,xhr){
+                        if(status && status === 'success'){
+                            return response;
+                        }
+                        self.location = 'index.html';
+                        return;
+                    });
                 });
             }else {
                 self.location = 'login.html';
