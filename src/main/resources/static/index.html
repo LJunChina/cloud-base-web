@@ -8,6 +8,7 @@
     <link href="dist/semantic.min.css" rel="stylesheet" />
     <link href="libs/ionicons/css/ionicons.min.css" rel="stylesheet" />
     <link href="dist/main.css" rel="stylesheet">
+    <link href="libs/sweetalert2/sweetalert2.min.css" rel="stylesheet">
     <link href="libs/pacejs/pace.css" rel="stylesheet" />
 
 </head>
@@ -71,7 +72,7 @@
                         <div class="menu">
                             <a class="item"><i class="lock icon"></i>修改密码</a>
                             <a class="item"><i class="user icon"></i>个人信息</a>
-                            <a class="item"><i class="power icon"></i>退出登录</a>
+                            <a class="item" href="javascript:;" id="logout"><i class="power icon"></i>退出登录</a>
                         </div>
                     </div>
                 </div>
@@ -94,9 +95,11 @@
 <script src="dist/semantic.min.js"></script>
 <!--semantic-->
 <script src="libs/jquery.nicescroll.min.js"></script>
+<script src="libs/sweetalert2/sweetalert2.min.js"></script>
 <script src="libs/cookie/js.cookie.js"></script>
 <script data-pace-options='{ "ajax": true }' src="libs/pacejs/pace.js"></script>
 <script src="dist/main.js"></script>
+<script src="libs/utils.js"></script>
 <script type="application/javascript">
     $(function () {
         //拉取菜单数据
@@ -135,7 +138,7 @@
                     });
                 });
             }else {
-                self.location = 'login.html';
+                self.location = 'index.html';
             }
         });
 
@@ -145,10 +148,20 @@
             if(resp.code === "0000"){
                 $("#user-name").html(resp.data.userName);
             }else {
-                self.location = 'login.html';
+                self.location = 'index.html';
             }
-        })
-
+        });
+        //退出登录
+        $("#logout").on('click',function () {
+           $.post("/logout",{},function (resp) {
+               var result = JSON.parse(resp);
+               if(result && result.code === '0000'){
+                   self.location = 'index.html';
+                   return;
+               }
+               $.error("处理失败");
+           });
+        });
     });
 
 </script>

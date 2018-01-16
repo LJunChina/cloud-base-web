@@ -288,7 +288,7 @@ $(document).ready(function () {
             "sTitle" : "操作",
             "sDefaultContent" : "",
             "sClass" : "center",
-            "width":"30%"
+            "width":"32%"
         }],
         "aoColumnDefs":[{
             "aTargets":[1],"mRender":function(data,type,full){

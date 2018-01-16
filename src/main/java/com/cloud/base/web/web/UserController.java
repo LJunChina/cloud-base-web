@@ -1,6 +1,7 @@
 package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.base.sso.context.LoginUser;
 import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.base.web.utils.ControllerUtil;
@@ -23,6 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -144,6 +146,45 @@ public class UserController {
             return result;
         }catch (Exception e){
             logger.error("exception occurred in saveUserInfo :",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 用户退出登录
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public String userLogout(HttpServletRequest request,HttpServletResponse response){
+        try {
+            //获取当前登录用户
+            Cookie[] cookies = request.getCookies();
+            if(EmptyChecker.isEmpty(cookies)){
+                return new BaseRespDTO().toString();
+            }
+            Cookie tokenCookie = Stream.of(cookies).filter(s -> "tokenId".equals(s.getName())).findFirst().orElse(null);
+            if(EmptyChecker.isEmpty(tokenCookie) || EmptyChecker.isEmpty(tokenCookie.getValue())){
+                return new BaseRespDTO().toString();
+            }
+            String tokenId = tokenCookie.getValue();
+            logger.debug("current loginUser token :{}",tokenId);
+            String result = this.restTemplate.postForEntity(Constant.USER_LOGOUT,null,String.class,tokenId).getBody();
+            JSONObject object = JSONObject.parseObject(result);
+            if(!ResultCode.OK.getCode().equals(object.getString("code"))){
+                return new BaseRespDTO(ResultCode.FAIL).toString();
+            }
+            if(!object.getBoolean("data")){
+                return new BaseRespDTO(ResultCode.FAIL).toString();
+            }
+            //清除cookie
+            tokenCookie.setMaxAge(0);
+            tokenCookie.setValue(null);
+            response.addCookie(tokenCookie);
+            logger.info("success! user already logout.");
+            return new BaseRespDTO().toString();
+        }catch (Exception e){
+            logger.error("exception occurred in userLogout :",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }

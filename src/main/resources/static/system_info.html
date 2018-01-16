@@ -22,7 +22,7 @@
 
 
 
-<div class="ui standard modal">
+<div class="ui standard modal" id="add-system">
     <div class="header">
         新增业务系统
     </div>
@@ -70,7 +70,7 @@
 <script type="application/javascript">
     $(function () {
         var $submit = $("#submit");
-        $(".modaleffect").on("click", function () {
+        $("#add-system").on("click", function () {
             var a = $(this).attr("data-value");
             $(".ui.modal.standard").modal("setting", "transition", a).modal("show");
         });
