@@ -178,9 +178,11 @@ public class UserController {
                 return new BaseRespDTO(ResultCode.FAIL).toString();
             }
             //清除cookie
-            tokenCookie.setMaxAge(0);
-            tokenCookie.setValue(null);
-            response.addCookie(tokenCookie);
+            Cookie clearCookie = new Cookie("tokenId",null);
+            clearCookie.setMaxAge(-1);
+            clearCookie.setDomain("joninfo.cn");
+            clearCookie.setPath("/");
+            response.addCookie(clearCookie);
             logger.info("success! user already logout.");
             return new BaseRespDTO().toString();
         }catch (Exception e){

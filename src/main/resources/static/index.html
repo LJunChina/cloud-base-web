@@ -156,7 +156,7 @@
            $.post("/logout",{},function (resp) {
                var result = JSON.parse(resp);
                if(result && result.code === '0000'){
-                   self.location = 'index.html';
+                   self.location.reload(true);
                    return;
                }
                $.error("处理失败");
