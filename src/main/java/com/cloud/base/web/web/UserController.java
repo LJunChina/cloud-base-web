@@ -1,7 +1,6 @@
 package com.cloud.base.web.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cloud.base.sso.context.LoginUser;
 import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.base.web.utils.ControllerUtil;
@@ -24,7 +23,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
