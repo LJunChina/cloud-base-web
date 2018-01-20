@@ -1,5 +1,7 @@
 package com.cloud.base.web.web;
 
+import com.cloud.base.sso.context.LoginUser;
+import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.common.dto.BaseRespDTO;
 import com.cloud.common.enums.ResultCode;
@@ -65,10 +67,11 @@ public class RoleInfoController {
     public String getAllRoleInfo(@RequestParam(value = "roleName",defaultValue = StringUtils.EMPTY) String roleName,
                                  @RequestParam(value = "appId",defaultValue = StringUtils.EMPTY) String appId,
                                  @RequestParam(value = "pageIndex",defaultValue = "1") Integer pageIndex,
-                                 @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
+                                 @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,
+                                 @RequestParam(value = "userId",required = false)String userId){
         logger.info("the params of getAllRoleInfo,roleName:{},appId:{},pageIndex:{},pageSize:{} ",roleName,appId,pageIndex,pageSize);
         try {
-            String result = this.restTemplate.getForEntity(Constant.GET_ALL_ROLE,String.class,roleName,appId,pageIndex,pageSize).getBody();
+            String result = this.restTemplate.getForEntity(Constant.GET_ALL_ROLE,String.class,roleName,appId,pageIndex,pageSize,userId).getBody();
             logger.info("the result of getAllRoleInfo is : {}",result);
             return result;
         }catch (Exception e){

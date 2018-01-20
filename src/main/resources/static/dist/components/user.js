@@ -1,4 +1,4 @@
-
+var userId = null;
 //datatable page semantic datatable settings
 (function (window, document, undefined) {
     var factory = function ($, DataTable) {
@@ -183,9 +183,11 @@ function returnRoleData(sSource, aDataSet, fnCallback) {
         "contentType": "application/json; charset=utf-8",
         "type" : "get",
         "url" : "/role/get-roles",
+        "async":false,
         "data" :{
             "pageSize": getPageSize(aDataSet),
-            "pageIndex":getPageIndex(aDataSet)
+            "pageIndex":getPageIndex(aDataSet),
+            "userId" : userId
         },
         "success" : function(resp){
             if(resp.code === '0000'){
@@ -420,7 +422,13 @@ $(document).ready(function () {
     }];
     var roleDefColumns = [{
         "aTargets":[0],"mRender":function(data,type,full){
-            return "<div class=\"ui checkbox\">\n" +
+            if(full.selected && full.selected === '1'){
+                return "<div class=\"ui checkbox\">" +
+                    "                                    <input type=\"checkbox\" checked class='user' value='"+data+"'>" +
+                    "                                    <label class=\"coloring grey\"></label>" +
+                    "                                </div>";
+            }
+            return "<div class=\"ui checkbox\">" +
                 "                                    <input type=\"checkbox\" class='user' value='"+data+"'>" +
                 "                                    <label class=\"coloring grey\"></label>" +
                 "                                </div>";
@@ -440,9 +448,15 @@ $(document).ready(function () {
     baseOption.aoColumnDefs = userDefColumns;
     //表格加载完成
     baseOption.fnInitComplete = function (oSettings, json) {
+        //加载角色数据
+        baseOption.aoColumns = roleColumns;
+        baseOption.aoColumnDefs = roleDefColumns;
+        baseOption.fnInitComplete = null;
+        baseOption.fnServerData = returnRoleData;
         $("div.allocation-role").on('click',function () {
-            $("#role_table").dataTable().api().ajax.reload();
-            var userId = $(this).data("id");
+            userId = $(this).data("id");
+            $("#role_table").dataTable(baseOption);
+            //$("#role_table").dataTable().api().ajax.reload();
             $("#role-modal").modal({
                 closable: false,
                 onDeny: function () {
@@ -476,6 +490,7 @@ $(document).ready(function () {
                                 //异常
                                 $.error(resultData.message);
                             }
+                            roleIds = "";
                         });
                     }else {
                         $.error("未选择任何用户!");
@@ -489,10 +504,4 @@ $(document).ready(function () {
         })
     };
     $('#user_table').DataTable(baseOption);
-    //加载角色数据
-    baseOption.aoColumns = roleColumns;
-    baseOption.aoColumnDefs = roleDefColumns;
-    baseOption.fnInitComplete = null;
-    baseOption.fnServerData = returnRoleData;
-    $("#role_table").dataTable(baseOption);
 });
