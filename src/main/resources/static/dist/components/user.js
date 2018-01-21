@@ -187,7 +187,8 @@ function returnRoleData(sSource, aDataSet, fnCallback) {
         "data" :{
             "pageSize": getPageSize(aDataSet),
             "pageIndex":getPageIndex(aDataSet),
-            "userId" : userId
+            "userId" : userId,
+            "_":new Date().getMilliseconds()
         },
         "success" : function(resp){
             if(resp.code === '0000'){
@@ -285,7 +286,7 @@ $(document).ready(function () {
             }
         },
         "bProcessing" : true, //DataTables载入数据时，是否显示‘进度’提示
-        //"destroy" : true,//重载表格清空
+        "destroy" : true,//重载表格清空
         "aoColumns":[],
         "aoColumnDefs":[]
     };
@@ -456,7 +457,6 @@ $(document).ready(function () {
         $("div.allocation-role").on('click',function () {
             userId = $(this).data("id");
             $("#role_table").dataTable(baseOption);
-            //$("#role_table").dataTable().api().ajax.reload();
             $("#role-modal").modal({
                 closable: false,
                 onDeny: function () {
@@ -466,6 +466,7 @@ $(document).ready(function () {
                     var checkedRole = $("input.user:checked");
                     var roleIds = "";
                     if(checkedRole && checkedRole.length > 0){
+                        console.log(checkedRole);
                         $.each(checkedRole,function () {
                             roleIds += $(this).val() + ",";
                         });

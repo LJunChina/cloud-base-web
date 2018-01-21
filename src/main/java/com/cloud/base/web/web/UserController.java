@@ -46,7 +46,7 @@ public class UserController {
     public String login(@RequestParam(name = "userName")String userName, @RequestParam(name = "password")String password
             , HttpServletResponse response, @RequestParam(name = "code") String code, HttpSession session){
         String sessionCode = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        if(sessionCode == null || !sessionCode.equals(code)){
+        if(sessionCode == null || !sessionCode.equalsIgnoreCase(code)){
             return new BaseRespDTO(ResultCode.INVALID_CODE).toString();
         }
         MultiValueMap<String,String> params = new LinkedMultiValueMap<>();

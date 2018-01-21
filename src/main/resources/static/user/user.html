@@ -188,10 +188,9 @@
                     }).then(function (e) {
                         if(e){
                             $(".ui.modal.standard").modal('hide');
-                            $("#data_table").dataTable().api().ajax.reload();
+                            $("#user_table").dataTable().api().ajax.reload();
                         }
                     });
-
                 }
             });
         }
