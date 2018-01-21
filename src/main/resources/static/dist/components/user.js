@@ -466,7 +466,6 @@ $(document).ready(function () {
                     var checkedRole = $("input.user:checked");
                     var roleIds = "";
                     if(checkedRole && checkedRole.length > 0){
-                        console.log(checkedRole);
                         $.each(checkedRole,function () {
                             roleIds += $(this).val() + ",";
                         });

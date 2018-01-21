@@ -194,7 +194,6 @@ function returnData(sSource, aDataSet, fnCallback) {
                     "recordsFiltered":resp.data.total,
                     "data":resp.data.list
                 });
-                result = resp.data.list;
             }else {
                 self.location = "login.html";
             }
@@ -411,6 +410,7 @@ $(document).ready(function () {
     };
     $('#user_table').DataTable(authOption);
     function loadEvent(oSettings, json) {
+        //分配菜单
         $("div.allocation").on('click',function () {
             roleId = $(this).data("id");
             //重新加载数据
@@ -458,6 +458,100 @@ $(document).ready(function () {
                 width:'1200px',
                 "margin-left":'-38%'
             });
-        })
+        });
+        //分配操作
+        $("div.allocation-op").on('click',function () {
+            roleId = $(this).data("id");
+            //加载操作数据
+            var aoColumn = [{
+                "mDataProp" : "id",
+                "sDefaultContent" : "",
+                "sTitle" : "选择",
+                "sClass" : "text-center"
+            },{
+                "mDataProp" : "name",
+                "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
+                "sTitle" : "操作名称",
+                "sClass" : "center"
+            }, {
+                "mDataProp" : "itemUri",
+                "sTitle" : "请求路径",
+                "sDefaultContent" : "",
+                "sClass" : "center"
+            }, {
+                "mDataProp" : "appName",
+                "sTitle" : "所属系统",
+                "sDefaultContent" : "",
+                "sClass" : "center"
+            }];
+            var aoColumnDefs = [{
+                "aTargets":[0],"mRender":function(data,type,full){
+                    if(full.selected && full.selected === '1'){
+                        return "<div class=\"ui checkbox\">" +
+                            "                                    <input type=\"checkbox\" class='user' checked='checked' value='"+data+"'>" +
+                            "                                    <label class=\"coloring grey\"></label>" +
+                            "                                </div>";
+                    }
+                    return "<div class=\"ui checkbox\">" +
+                        "                                    <input type=\"checkbox\" class='user' value='"+data+"'>" +
+                        "                                    <label class=\"coloring grey\"></label>" +
+                        "                                </div>";
+                }
+            }];
+
+            createDataTable(function(sSource, aDataSet, fnCallback){
+                var params = {
+                    "pageIndex":getPageSize(aDataSet),
+                    "pageSize" : getPageSize(aDataSet),
+                    "itemType" : '0',
+                    "roleId":roleId
+                };
+                serverAjaxData("/auth/get-all-auth",'get',fnCallback,params);
+            },aoColumn,aoColumnDefs,null,'#operation-table');
+            $("#operation-table").dataTable().api().ajax.reload();
+            $("#operation-modal").modal({
+                closable: false,
+                onDeny: function () {
+                },
+                onApprove: function () {
+                    //提交后的逻辑处理
+                    var checkedUser = $("input.user:checked");
+                    var authIds = "";
+                    if(checkedUser && checkedUser.length > 0){
+                        $.each(checkedUser,function () {
+                            authIds += $(this).val() + ",";
+                        });
+                        if(!authIds || authIds === ""){
+                            $.error("未选择任何资源!");
+                            return false;
+                        }
+                        //执行ajax请求，菜单
+                        $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId,itemType:'0'},function (resp) {
+                            if(!resp){
+                                //异常
+                                $.error("系统异常,请稍后再试!");
+                            }
+                            var resultData = JSON.parse(resp);
+                            if(resultData.code === "0000"){
+                                //正常
+                                $.success("处理成功!");
+                            }else if(resultData.code === "8000") {
+                                //未登录
+                                self.location = "/login.html";
+                            }else {
+                                //异常
+                                $.error(resultData.message);
+                            }
+                        });
+                    }else {
+                        $.error("未选择任何用户!");
+                        return false;
+                    }
+                }
+            }).modal("show").css({
+                width:'1200px',
+                "margin-left":'-38%'
+            });
+        });
     }
 });

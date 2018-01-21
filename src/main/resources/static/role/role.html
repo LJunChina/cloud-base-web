@@ -100,9 +100,29 @@
         </div>
     </div>
 </div>
+
+<div class="ui standard modal" id="operation-modal">
+    <div class="header">
+        操作列表
+    </div>
+    <div style="margin: 16px;padding: 1px">
+        <table id="operation-table" class="ui compact selectable striped celled table tablet stackable" cellspacing="0" width="100%">
+        </table>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            关闭
+        </div>
+        <div class="ui right positive labeled icon button" id="allocation-op">
+            提交
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 <script src="../libs/datatable/jquery.dataTables.js"></script>
 <script src="../libs/sweetalert2/sweetalert2.min.js"></script>
 <script src="../libs/utils.js"></script>
+<script src="../libs/custom-datatables.js"></script>
 <script src="../dist/components/role.js"></script>
 <script type="application/javascript">
     $(function () {
