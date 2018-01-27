@@ -101,6 +101,6 @@ $(document).ready(function () {
             "sClass" : "center"
         }]
     };
-    $('.table').DataTable(option);
+    $('#system_table').DataTable(option);
 });
 
