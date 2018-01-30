@@ -428,29 +428,29 @@ $(document).ready(function () {
                             authIds += $(this).val() + ",";
                         });
                         if(!authIds || authIds === ""){
-                            $.error("未选择任何资源!");
+                            $.error("未选择任何资源!",null);
                             return false;
                         }
                         //执行ajax请求，菜单
                         $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId,itemType:'1'},function (resp) {
                             if(!resp){
                                 //异常
-                                $.error("系统异常,请稍后再试!");
+                                $.error("系统异常,请稍后再试!",null);
                             }
                             var resultData = JSON.parse(resp);
                             if(resultData.code === "0000"){
                                 //正常
-                                $.success("处理成功!");
+                                $.success("处理成功!",null);
                             }else if(resultData.code === "8000") {
                                 //未登录
                                 self.location = "/login.html";
                             }else {
                                 //异常
-                                $.error(resultData.message);
+                                $.error(resultData.message,null);
                             }
                         });
                     }else {
-                        $.error("未选择任何用户!");
+                        $.error("未选择任何用户!",null);
                         return false;
                     }
                 }
@@ -522,29 +522,29 @@ $(document).ready(function () {
                             authIds += $(this).val() + ",";
                         });
                         if(!authIds || authIds === ""){
-                            $.error("未选择任何资源!");
+                            $.error("未选择任何资源!",null);
                             return false;
                         }
                         //执行ajax请求，菜单
                         $.post("/auth/allocation-auth",{authIds:authIds,roleId:roleId,itemType:'0'},function (resp) {
                             if(!resp){
                                 //异常
-                                $.error("系统异常,请稍后再试!");
+                                $.error("系统异常,请稍后再试!",null);
                             }
                             var resultData = JSON.parse(resp);
                             if(resultData.code === "0000"){
                                 //正常
-                                $.success("处理成功!");
+                                $.success("处理成功!",null);
                             }else if(resultData.code === "8000") {
                                 //未登录
                                 self.location = "/login.html";
                             }else {
                                 //异常
-                                $.error(resultData.message);
+                                $.error(resultData.message,null);
                             }
                         });
                     }else {
-                        $.error("未选择任何用户!");
+                        $.error("未选择任何用户!",null);
                         return false;
                     }
                 }

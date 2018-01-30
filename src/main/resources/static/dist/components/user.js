@@ -470,30 +470,30 @@ $(document).ready(function () {
                             roleIds += $(this).val() + ",";
                         });
                         if(!roleIds || roleIds === ""){
-                            $.error("未选择任何用户!");
+                            $.error("未选择任何用户!",null);
                             return false;
                         }
                         //执行ajax请求
                         $.post("/role/allocation-users",{userId:userId,roleIds:roleIds},function (resp) {
                             if(!resp){
                                 //异常
-                                $.error("系统异常,请稍后再试!");
+                                $.error("系统异常,请稍后再试!",null);
                             }
                             var resultData = JSON.parse(resp);
                             if(resultData.code === "0000"){
                                 //正常
-                                $.success("处理成功!");
+                                $.success("处理成功!",null);
                             }else if(resultData.code === "8001") {
                                 //未登录
                                 self.location = "/login.html";
                             }else {
                                 //异常
-                                $.error(resultData.message);
+                                $.error(resultData.message,null);
                             }
                             roleIds = "";
                         });
                     }else {
-                        $.error("未选择任何用户!");
+                        $.error("未选择任何用户!",null);
                         return false;
                     }
                 }
