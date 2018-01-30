@@ -18,7 +18,6 @@
                 var pageSize,pageIndex = 1;
                 $.each(aDataSet,function () {
                     if(this.name && this.name === 'length'){
-                        console.log("length:"+ this.value)
                         pageSize = this.value;
                     }
                 });
@@ -99,8 +98,55 @@ $(document).ready(function () {
             "sTitle" : "系统host",
             "sDefaultContent" : "",
             "sClass" : "center"
-        }]
+        }, {
+            "mDataProp" : "id",
+            "sTitle" : "操作",
+            "sDefaultContent" : "",
+            "sClass" : "center",
+            "width" : '15%'
+        }],
+        "aoColumnDefs":[{
+            "aTargets":[4],"mRender":function(data,type,full){
+                var id = full.id || null;
+                return "<div class=\"ui vertical animated button delete-system\" style='margin-bottom:0px!important;' tabindex='0' data-id='"+id+"'>" +
+                    "                                    <div class=\"visible content\">删除系统</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        <i class=\"gray remove icon\"></i>" +
+                    "                                    </div>" +
+                    "                                </div>" +
+                    "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+id+"'>" +
+                    "                                    <div class=\"visible content\">更新系统</div>" +
+                    "                                    <div class=\"hidden content\">" +
+                    "                                        <i class=\"gray edit icon\"></i>" +
+                    "                                    </div>" +
+                    "                                </div>";
+            }
+        }],
+        "fnInitComplete":loadSystemEvent
     };
+    function loadSystemEvent(oSettings, json) {
+        //删除系统
+        $("div.delete-system").on('click',function () {
+            var id = $(this).data('id');
+            if(!id){
+                return;
+            }
+            $.confirm('确定要删除吗?','这会导致该系统所有功能不可用',function (e) {
+                if(e){
+                    $.post('/system-info/delete-system-info',{id:id},function (resp) {
+                        var result = JSON.parse(resp);
+                        if(result && result.code === '0000'){
+                            $.success("删除成功",function (e) {
+                                //刷新列表
+                                $('#system_table').dataTable().api().ajax.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
     $('#system_table').DataTable(option);
+
 });
 

@@ -8,12 +8,15 @@ import com.cloud.common.enums.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -72,6 +75,25 @@ public class SystemInfoController {
             return result;
         }catch (Exception e){
             logger.error("exception occurred in saveSystemInfo",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+
+    /**
+     * 删除系统信息接口
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/delete-system-info")
+    public String deleteSystemInfo(@RequestParam(value = "id",required = false)String id){
+        logger.info("params of deleteSystemInfo,id:{}",id);
+        try {
+            String result = this.restTemplate.postForEntity(Constant.DELETE_SYSTEM_INFO,null,String.class,id).getBody();
+            logger.info("result of the deleteSystemInfo is :{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in deleteSystemInfo",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }

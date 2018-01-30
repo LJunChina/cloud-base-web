@@ -47,4 +47,6 @@ public final class Constant {
     public static final String GET_USER_PRIVILEGE = USER_SERVICE + "/auth/check-privilege?userId={userId}&appId={appId}&uri={uri}";
     /**退出登录*/
     public static final String USER_LOGOUT = USER_SERVICE + "/logout/{tokenId}";
+    /**删除系统信息接口*/
+    public static final String DELETE_SYSTEM_INFO = USER_SERVICE + "/system-info/delete-system-info/{id}";
 }
