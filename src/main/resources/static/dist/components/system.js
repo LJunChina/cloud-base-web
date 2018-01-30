@@ -114,7 +114,7 @@ $(document).ready(function () {
                     "                                        <i class=\"gray remove icon\"></i>" +
                     "                                    </div>" +
                     "                                </div>" +
-                    "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+id+"'>" +
+                    "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-value='horizontal flip' data-id='"+id+"'>" +
                     "                                    <div class=\"visible content\">更新系统</div>" +
                     "                                    <div class=\"hidden content\">" +
                     "                                        <i class=\"gray edit icon\"></i>" +
@@ -145,6 +145,82 @@ $(document).ready(function () {
                 }
             });
         });
+        //更新事件
+        $("div.edit").on('click',function () {
+            var id = $(this).data('id');
+            if(!id){
+                return;
+            }
+            //弹出遮蔽罩
+            var a = $(this).data("value");
+            //拉取数据
+            $.getJSON('/system-info/get/' + id,function (result) {
+                if(result && result.code === '0000'){
+                    //填充数据
+                    var data = result.data;
+                    $("input[name='systemName']").val(data.systemName);
+                    $("input[name='systemChn']").val(data.systemChn);
+                    $("input[name='systemHost']").val(data.systemHost);
+                    $("input[name='systemContext']").val(data.systemContext);
+                }else {
+                    $.error("未查询到任何数据",null);
+                    return;
+                }
+            });
+            $("#update-system").modal("setting", "transition", a).modal("show");
+        });
+        //提交更新表单
+        var $new = $('#submit_update');
+        $new.on('click',function () {
+            $new.submit();
+        });
+        $('#update-system').form({
+            fields: {
+                systemName: {
+                    identifier  : 'systemName',
+                    rules: [
+                        {
+                            type   : 'empty',
+                            prompt : '请输入系统名称'
+                        }
+                    ]
+                },
+                systemHost: {
+                    identifier  : 'systemHost',
+                    rules: [
+                        {
+                            type   : 'empty',
+                            prompt : '请输入系统host'
+                        }
+                    ]
+                }
+            },
+            onSuccess:submitForm
+        });
+        $('#update-system').submit(function(e){
+            return false;
+        });
+        function submitForm() {
+            var formData = $('.ui.form input').serializeArray();
+           /* $.post("/system-info/update",formData,function (data) {
+                var resultData = JSON.parse(data);
+                if(resultData.code === '0000'){
+                    swal({
+                        text: "处理成功！",
+                        type: "success",
+                        confirmButtonText: '确认',
+                        confirmButtonColor: '#4cd964'
+                    }).then(function (e) {
+                        if(e){
+                            $(".ui.modal.standard").modal('hide');
+                            //重置表单
+                            $('#system')[0].reset();
+                            $("#system_table").dataTable().api().ajax.reload();
+                        }
+                    });
+                }
+            });*/
+        }
     }
     $('#system_table').DataTable(option);
 

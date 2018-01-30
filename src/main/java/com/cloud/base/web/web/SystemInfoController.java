@@ -97,4 +97,22 @@ public class SystemInfoController {
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }
+
+    /**
+     * 获取系统详情
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/get/{id}")
+    public String getSystemInfoDetail(@PathVariable(value = "id")String id){
+        logger.info("params of getSystemInfoDetail,id:{}",id);
+        try {
+            String result = this.restTemplate.getForEntity(Constant.GET_SYSTEM_INFO_DETAIL,String.class,id).getBody();
+            logger.info("result of the getSystemInfoDetail is :{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getSystemInfoDetail",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
 }

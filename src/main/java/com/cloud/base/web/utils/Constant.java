@@ -49,4 +49,6 @@ public final class Constant {
     public static final String USER_LOGOUT = USER_SERVICE + "/logout/{tokenId}";
     /**删除系统信息接口*/
     public static final String DELETE_SYSTEM_INFO = USER_SERVICE + "/system-info/delete-system-info/{id}";
+    /**获取系统详情*/
+    public static final String GET_SYSTEM_INFO_DETAIL = USER_SERVICE + "/system-info/get/{id}";
 }
