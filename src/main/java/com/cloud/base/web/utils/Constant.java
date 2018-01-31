@@ -51,4 +51,6 @@ public final class Constant {
     public static final String DELETE_SYSTEM_INFO = USER_SERVICE + "/system-info/delete-system-info/{id}";
     /**获取系统详情*/
     public static final String GET_SYSTEM_INFO_DETAIL = USER_SERVICE + "/system-info/get/{id}";
+    /**更新系统信息*/
+    public static final String UPDATE_SYSTEM_INFO = USER_SERVICE + "/system-info/update/{id}";
 }

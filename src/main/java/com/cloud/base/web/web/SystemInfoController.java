@@ -115,4 +115,27 @@ public class SystemInfoController {
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }
+
+    /**
+     * 更新系统信息
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/update")
+    public String updateSystem(HttpServletRequest request){
+        Map<String,String> params = ControllerUtil.getParamtersMap(request);
+        String param = JSONObject.toJSONString(params);
+        logger.info("params of updateSystem,id:{}",param);
+        try {
+            String id = params.remove("id");
+            MultiValueMap<String,String> requestEntity = new LinkedMultiValueMap<>();
+            requestEntity.setAll(params);
+            String result = this.restTemplate.postForEntity(Constant.UPDATE_SYSTEM_INFO,requestEntity,String.class,id).getBody();
+            logger.info("result of the updateSystem is :{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getSystemInfoDetail",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
 }

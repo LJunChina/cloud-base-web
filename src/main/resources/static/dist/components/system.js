@@ -158,10 +158,11 @@ $(document).ready(function () {
                 if(result && result.code === '0000'){
                     //填充数据
                     var data = result.data;
-                    $("input[name='systemName']").val(data.systemName);
-                    $("input[name='systemChn']").val(data.systemChn);
-                    $("input[name='systemHost']").val(data.systemHost);
-                    $("input[name='systemContext']").val(data.systemContext);
+                    $("#update-system input[name='systemName']").val(data.systemName);
+                    $("#update-system input[name='systemChn']").val(data.systemChn);
+                    $("#update-system input[name='systemHost']").val(data.systemHost);
+                    $("#update-system input[name='systemContext']").val(data.systemContext);
+                    $("#update-system input[name='id']").val(id);
                 }else {
                     $.error("未查询到任何数据",null);
                     return;
@@ -201,25 +202,24 @@ $(document).ready(function () {
             return false;
         });
         function submitForm() {
-            var formData = $('.ui.form input').serializeArray();
-           /* $.post("/system-info/update",formData,function (data) {
+            var formData = $('#new_system input').serializeArray();
+            $.post("/system-info/update",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
-                    swal({
-                        text: "处理成功！",
-                        type: "success",
-                        confirmButtonText: '确认',
-                        confirmButtonColor: '#4cd964'
-                    }).then(function (e) {
+                    $.success("处理成功！",function (e) {
                         if(e){
-                            $(".ui.modal.standard").modal('hide');
+                            $("#update-system").modal('hide');
                             //重置表单
-                            $('#system')[0].reset();
+                            $('#new_system')[0].reset();
                             $("#system_table").dataTable().api().ajax.reload();
                         }
                     });
+                }else if(resultData.code === '8001'){
+                    self.location = "/index.html";
+                }else {
+                    $.error(resultData.message,null);
                 }
-            });*/
+            });
         }
     }
     $('#system_table').DataTable(option);

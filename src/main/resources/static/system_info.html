@@ -90,6 +90,7 @@
                         <label>系统context</label>
                         <input placeholder="系统context" name="systemContext" type="text">
                     </div>
+                    <input type="hidden" name="id">
                 </form>
             </div>
         </div>
@@ -145,7 +146,7 @@
             return false;
         });
         function submitForm() {
-            var formData = $('.ui.form input').serializeArray();
+            var formData = $('#add-system input').serializeArray();
             $.post("/system-info/save-system-info",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
@@ -156,7 +157,7 @@
                         confirmButtonColor: '#4cd964'
                     }).then(function (e) {
                         if(e){
-                            $(".ui.modal.standard").modal('hide');
+                            $("#add-system").modal('hide');
                             //重置表单
                             $('#system')[0].reset();
                             $("#system_table").dataTable().api().ajax.reload();
