@@ -133,11 +133,18 @@
                     var $content = $("#content");
                     $content.html("");
                     $content.load(url,null,function(response,status,xhr){
-                        if(status && status === 'success'){
+                        try {
+                            //捕获非html代码
+                            var result = JSON.parse(response);
+                            $content.html("");
+                            $.info(result.message,function (e) {
+                                if(e){
+                                    self.location = 'index.html';
+                                }
+                            });
+                        }catch(err) {
                             return response;
                         }
-                        self.location = 'index.html';
-                        return;
                     });
                 });
             }else {
