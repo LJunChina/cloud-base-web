@@ -98,6 +98,9 @@
 <script src="libs/sweetalert2/sweetalert2.min.js"></script>
 <script src="libs/cookie/js.cookie.js"></script>
 <script data-pace-options='{ "ajax": true }' src="libs/pacejs/pace.js"></script>
+<script src="libs/datatable/jquery.dataTables.js"></script>
+<script src="dist/custom-datatable.js"></script>
+<script src="libs/custom-datatables.js"></script>
 <script src="dist/main.js"></script>
 <script src="libs/utils.js"></script>
 <script type="application/javascript">
@@ -144,7 +147,6 @@
 
         //获取用户信息
         $.getJSON("/get-user-detail",function (resp) {
-            console.log(resp);
             if(resp.code === "0000"){
                 $("#user-name").html(resp.data.userName);
             }else {

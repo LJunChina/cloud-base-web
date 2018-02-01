@@ -62,3 +62,34 @@ function createDataTable(returnData,aoColumns,aoColumnDefs,fnInitComplete,dom) {
     };
     $(dom).DataTable(option);
 }
+
+function getPageIndex(aDataSet) {
+    var pageSize,pageIndex = 1;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'start'){
+            var start = this.value;
+            if(start === 0){
+                pageIndex = 1;
+            }else {
+                if(pageSize){
+                    pageIndex = start/pageSize + 1;
+                }
+            }
+        }
+    });
+    return pageIndex;
+}
+function getPageSize(aDataSet) {
+    var pageSize = 10;
+    $.each(aDataSet,function () {
+        if(this.name && this.name === 'length'){
+            pageSize = this.value;
+        }
+    });
+    return pageSize;
+}
