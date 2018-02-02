@@ -58,6 +58,8 @@ function loadSystemEvent(oSettings, json) {
                             //刷新列表
                             initTable(aoColumn,aoColumnDefs);
                         });
+                    }else {
+                        
                     }
                 });
             }
