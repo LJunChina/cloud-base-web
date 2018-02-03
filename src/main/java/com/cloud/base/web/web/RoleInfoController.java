@@ -103,4 +103,53 @@ public class RoleInfoController {
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }
+
+    /**
+     * 查询角色详情
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/get/{id}")
+    public String getRoleInfo(@PathVariable(value = "id")String id){
+        logger.info("getRoleInfo request param,id:{}",id);
+        try {
+            String result = this.restTemplate.getForEntity(Constant.GET_ROLE_INFO_DETAIL,String.class,id).getBody();
+            logger.info("the result of getRoleInfo is : {}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getRoleInfo",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 更新角色信息
+     * @param roleName
+     * @param appId
+     * @param roleType
+     * @param describe
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/update/{id}")
+    public String updateRoleInfo(@RequestParam(value = "roleName",required = false) String roleName,
+                                 @RequestParam(value = "appId",required = false) String appId,
+                                 @RequestParam(value = "roleType",required = false) String roleType,
+                                 @RequestParam(value = "describe") String describe,
+                                 @PathVariable(value = "id")String id){
+        logger.info("updateRoleInfo request param,id:{},roleName:{},appId:{},roleType:{},describe:{}",id,roleName,appId,roleType,describe);
+        try {
+            MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+            params.add("roleName",roleName);
+            params.add("appId",appId);
+            params.add("roleType",roleType);
+            params.add("describe",describe);
+            String result = this.restTemplate.postForEntity(Constant.UPDATE_ROLE_INFO,params,String.class,id).getBody();
+            logger.info("the result of updateRoleInfo is : {}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in updateRoleInfo",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
 }

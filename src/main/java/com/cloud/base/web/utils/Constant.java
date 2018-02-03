@@ -53,4 +53,8 @@ public final class Constant {
     public static final String GET_SYSTEM_INFO_DETAIL = USER_SERVICE + "/system-info/get/{id}";
     /**更新系统信息*/
     public static final String UPDATE_SYSTEM_INFO = USER_SERVICE + "/system-info/update/{id}";
+    /**查看角色信息*/
+    public static final String GET_ROLE_INFO_DETAIL = USER_SERVICE + "/role/get/{id}";
+    /**更新角色信息*/
+    public static final String UPDATE_ROLE_INFO = USER_SERVICE + "/role/update/{id}";
 }

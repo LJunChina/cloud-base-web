@@ -55,19 +55,19 @@ var roleAoColumnDefs = [{
             "                                        分配操作" +
             "                                    </div>" +
             "                                </div>"+
-            "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button delete-role\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">删除</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray remove icon\"></i>" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button edit-role\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">编辑</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray edit icon\"></i>" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button query-user\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button query-user\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">查看用户</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray search icon\"></i>" +
@@ -156,9 +156,24 @@ var operationAoColumnDefs = [{
     }
 }];
 var roleId = null;
+function updateForm(updateRoleId) {
+    var formData = $('#update-role input').serializeArray();
+    $.post("/role/update/" + updateRoleId,formData,function (data) {
+        var resultData = JSON.parse(data);
+        if(resultData.code === '0000'){
+            $.success("处理成功！",function (e) {
+                if(e){
+                    $(".ui.modal.standard").modal('hide');
+                    initTable(roleAoColumn,roleAoColumnDefs,"/role/get-roles","#role_table");
+                }
+            });
+        }
+    });
+}
 function loadEvent(oSettings, json) {
+    //此处添加事件只能使用先选择表格再过滤出孩子节点,其他点击事件的写法在分页后会导致失效
     //分配菜单
-    $("div.allocation").on('click',function () {
+    $("#role_table").on('click','div.allocation',function () {
         roleId = $(this).data("id");
         //重新加载数据
         createDataTable(function(sSource, aDataSet, fnCallback){
@@ -216,7 +231,7 @@ function loadEvent(oSettings, json) {
         });
     });
     //分配操作
-    $("div.allocation-op").on('click',function () {
+    $("#role_table").on('click','div.allocation-op',function () {
         roleId = $(this).data("id");
         //加载操作数据
         createDataTable(function(sSource, aDataSet, fnCallback){
@@ -273,6 +288,95 @@ function loadEvent(oSettings, json) {
             "margin-top" :'-300px'
         });
     });
+    //删除操作
+    $("#role_table").on('click','div.delete-role',function () {
+        var updateRoleId = $(this).data('id');
+        //拉取数据
+    });
+    //更新操作
+    $("#role_table").on('click','div.edit-role',function () {
+        var updateRoleId = $(this).data('id');
+        $.getJSON('/role/get/'+ updateRoleId,null,function (resp) {
+            if (resp.code === '0000') {
+                //填充到modal
+                $("#update-role input[name='roleName']").val(resp.data.roleName);
+                $("#update-role input[name='roleType'][value='" + resp.data.roleType + "']").attr('checked', true);
+                $("#update-role input[name='describe']").val(resp.data.describe);
+                //加载系统信息列表
+                $.getJSON('/system-info/get-system-info',{pageIndex:1,pageSize:99999},function (systemResp) {
+                    if(systemResp && systemResp.code === '0000'){
+                        var list = systemResp.data.list;
+                        var objectValues = [];
+                        if(list && list.length > 0){
+                            $("#update-system-data").html("");
+                            $.each(list,function () {
+                                if(resp.data.appId === this.id){
+                                    //设置dropDown的默认值
+                                    objectValues.push({
+                                        "name":this.systemName,
+                                        "value":this.id,
+                                        "selected":true
+                                    });
+                                }else {
+                                    objectValues.push({
+                                        "name":this.systemName,
+                                        "value":this.id
+                                    });
+                                }
+                            });
+                            $("#update-role-dropdown").dropdown({
+                                values:objectValues
+                            });
+                        }
+                    }else {
+                        self.location = "../login.html";
+                    }
+                });
+                //弹出modal
+                $("#update-role-modal").modal({
+                    closable: false,
+                    onDeny: function () {
+                    },
+                    onApprove: function () {
+                        //提交后的逻辑处理
+                        $('#update-role').submit();
+                        $('#update-role').form({
+                            fields: {
+                                name: {
+                                    identifier  : 'roleName',
+                                    rules: [
+                                        {
+                                            type   : 'empty',
+                                            prompt : '请输入角色名称'
+                                        }
+                                    ]
+                                },
+                                itemUri: {
+                                    identifier  : 'roleType',
+                                    rules: [
+                                        {
+                                            type   : 'empty',
+                                            prompt : '请输入角色类型'
+                                        }
+                                    ]
+                                }
+                            },
+                            onSuccess : updateForm(updateRoleId)
+                        });
+                    }
+                }).modal("show");
+                $('#update-role').submit(function (e) {
+                    return false;
+                });
+            } else if (resp.code === '8001' || resp.code === '7000' || resp.code === '9014') {
+                $.info(resp.message, function (e) {
+                    self.location = 'index.html';
+                });
+            } else {
+                $.error(resp.message, null);
+            }
+        })
+    })
 }
 function initTable(aoColumn,aoColumnDefs,url,dom) {
     createDataTable(function(sSource, aDataSet, fnCallback){

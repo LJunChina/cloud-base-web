@@ -29,6 +29,7 @@
         <div class="sixteen wide tablet sixteen wide computer column">
             <div class="ui segments">
                 <form class="ui form segment form4" id="role">
+                    <input type="hidden" value="1" name="itemType">
                     <div class="field">
                         <label>角色名称</label>
                         <input placeholder="角色名称" name="roleName" type="text">
@@ -114,6 +115,63 @@
         </div>
     </div>
 </div>
+
+
+<div class="ui standard modal" id="update-role-modal">
+    <div class="header">
+        更新角色
+    </div>
+    <div class="row">
+        <div class="sixteen wide tablet sixteen wide computer column">
+            <div class="ui segments">
+                <form class="ui form segment form4" id="update-role">
+                    <div class="field">
+                        <label>角色名称</label>
+                        <input placeholder="角色名称" name="roleName" type="text">
+                    </div>
+                    <div class="inline fields">
+                        <label>角色类型</label>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="roleType" checked="checked" value="00">
+                                <label>管理员</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="roleType" value="01">
+                                <label>普通用户</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>所属系统</label>
+                        <div class="ui fluid search selection dropdown" id="update-role-dropdown">
+                            <input type="hidden" name="appId">
+                            <i class="dropdown icon"></i>
+                            <input class="search" autocomplete="off" tabindex="0"><div class="default text">所属系统</div>
+                            <div class="menu" tabindex="-1" id="update-system-data">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>角色描述信息</label>
+                        <input placeholder="角色描述信息" name="describe" type="text">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            关闭
+        </div>
+        <div class="ui right positive labeled icon button" id="update-role-submit">
+            提交
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 <script src="../dist/components/role.js"></script>
 <script type="application/javascript">
     $(function () {
@@ -171,8 +229,7 @@
             return false;
         });
         function submitForm() {
-            var formData = $('.ui.form input').serializeArray();
-            formData.push({name:'itemType',value:'1'});
+            var formData = $('#role').serializeArray();
             $.post("/role/save-role",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
@@ -187,7 +244,6 @@
                             initTable(roleAoColumn,roleAoColumnDefs,"/role/get-roles","#role_table");
                         }
                     });
-
                 }
             });
         }
