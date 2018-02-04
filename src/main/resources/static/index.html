@@ -139,7 +139,7 @@
                             $content.html("");
                             $.info(result.message,function (e) {
                                 if(e){
-                                    self.location = 'index.html';
+                                    self.location.reload(true);
                                 }
                             });
                         }catch(err) {
@@ -148,7 +148,7 @@
                     });
                 });
             }else {
-                self.location = 'index.html';
+                self.location.reload(true);
             }
         });
 
