@@ -11,6 +11,19 @@
         },
         "confirm":function (title,text,then) {
             confirm(title,text,then);
+        },
+        "handlerResult":function (resp, success) {
+            if(!resp){
+                return;
+            }
+            if(resp.code === '0000'){
+                success();
+            }else if(resp.code === '8001' || resp.code === '9014' || resp.code === '7000'){
+
+            }else {
+                alter(resp.message,"error",then);
+            }
+
         }
     });
     function alter(text,type,then) {

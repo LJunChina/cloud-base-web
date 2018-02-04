@@ -167,6 +167,14 @@ function updateForm(updateRoleId) {
                     initTable(roleAoColumn,roleAoColumnDefs,"/role/get-roles","#role_table");
                 }
             });
+        }else if(resultData.code === '8001' || resultData.code === '9014' || resultData.code === '7000'){
+            $.info(resultData.message,function (e) {
+                if(e){
+                    self.location.reload(true);
+                }
+            });
+        }else {
+            $.error(resultData.message,null);
         }
     });
 }
