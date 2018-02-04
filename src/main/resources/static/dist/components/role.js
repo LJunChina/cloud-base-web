@@ -290,8 +290,25 @@ function loadEvent(oSettings, json) {
     });
     //删除操作
     $("#role_table").on('click','div.delete-role',function () {
-        var updateRoleId = $(this).data('id');
-        //拉取数据
+        var deleteRoleId = $(this).data('id');
+        $.confirm('确定要删除吗?','这会导致该角色所有功能不可用',function (e) {
+            if(e){
+                $.post('/role/delete/' + deleteRoleId,null,function (delResp) {
+                    var result = JSON.parse(delResp);
+                    if(result && result.code === '0000'){
+                        $.success("删除成功",function (e) {
+                            //刷新列表
+                            initTable(roleAoColumn,roleAoColumnDefs,"/role/get-roles","#role_table");
+                        });
+                    }else if(result.code === '8001' || result.code === '7000' || result.code === '9014'){
+                        $.info(result.message,null);
+                        self.location = 'index.html';
+                    }else {
+                        $.error(result.code,null);
+                    }
+                });
+            }
+        });
     });
     //更新操作
     $("#role_table").on('click','div.edit-role',function () {

@@ -1,7 +1,5 @@
 package com.cloud.base.web.web;
 
-import com.cloud.base.sso.context.LoginUser;
-import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.common.dto.BaseRespDTO;
 import com.cloud.common.enums.ResultCode;
@@ -149,6 +147,25 @@ public class RoleInfoController {
             return result;
         }catch (Exception e){
             logger.error("exception occurred in updateRoleInfo",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+
+    /**
+     * 删除角色信息
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/delete/{id}")
+    public String deleteRoleInfoById(@PathVariable(value = "id") String id){
+        logger.info("deleteRoleInfoById request param,id:{}",id);
+        try {
+            String result = this.restTemplate.postForEntity(Constant.DELETE_ROLE_INFO,null,String.class,id).getBody();
+            logger.info("the result of deleteRoleInfoById is : {}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in deleteRoleInfoById",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }
