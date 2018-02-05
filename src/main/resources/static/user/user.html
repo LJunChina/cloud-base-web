@@ -109,6 +109,75 @@
     </div>
 </div>
 
+<!--编辑用户信息-->
+<div class="ui standard modal" id="update-user-modal">
+    <div class="header">
+        更新用户信息
+    </div>
+    <div class="row">
+        <div class="sixteen wide tablet sixteen wide computer column">
+            <div class="ui segments">
+                <form class="ui form segment form4" id="update-user-form">
+                    <div class="field">
+                        <label>用户名称(登录名)</label>
+                        <input placeholder="用户名称" name="userName" type="text">
+                    </div>
+                    <div class="field">
+                        <label>真实姓名</label>
+                        <input placeholder="真实姓名" name="name" type="text">
+                    </div>
+                    <div class="inline fields">
+                        <label>性别</label>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="sex" checked="checked" value="1">
+                                <label>男</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="sex" value="0">
+                                <label>女</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>邮箱</label>
+                        <input placeholder="邮箱" name="email" type="text">
+                    </div>
+                    <div class="field">
+                        <label>身份证号</label>
+                        <input placeholder="身份证号" name="idCard" type="text">
+                    </div>
+                    <div class="field">
+                        <label>手机</label>
+                        <input placeholder="手机" name="mobile" type="text">
+                    </div>
+                    <div class="field">
+                        <label>所属系统</label>
+                        <div class="ui fluid search selection dropdown" id="update-user-dropdown">
+                            <input type="hidden" name="appId">
+                            <i class="dropdown icon"></i>
+                            <input class="search" autocomplete="off" tabindex="0"><div class="default text">所属系统</div>
+                            <div class="menu" tabindex="-1" id="update-user-system-data">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            关闭
+        </div>
+        <div class="ui right positive labeled icon button" id="update-submit">
+            提交
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
 <script src="../dist/components/user.js"></script>
 <script type="application/javascript">
     $(function () {
@@ -167,7 +236,7 @@
             return false;
         });
         function submitForm() {
-            var formData = $('.ui.form input').serializeArray();
+            var formData = $('#user input').serializeArray();
             $.post("/save-user",formData,function (data) {
                 var resultData = JSON.parse(data);
                 if(resultData.code === '0000'){
@@ -182,6 +251,14 @@
                             $("#user_table").dataTable().api().ajax.reload();
                         }
                     });
+                }else if(resultData.code === '0000' || resultData.code === '7000' || resultData.code === '8001'){
+                    $.info(resultData.message,function (e) {
+                        if(e){
+                            self.location.reload(true);
+                        }
+                    })
+                }else {
+                    $.error(resultData.message,null);
                 }
             });
         }

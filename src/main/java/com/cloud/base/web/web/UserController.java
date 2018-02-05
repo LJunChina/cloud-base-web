@@ -1,5 +1,6 @@
 package com.cloud.base.web.web;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.base.sso.context.LoginUserContext;
 import com.cloud.base.web.utils.Constant;
@@ -78,7 +79,7 @@ public class UserController {
     }
 
     /**
-     * 用户详情查询
+     * 当前登录用户详情查询
      * @return
      */
     @GetMapping("/get-user-detail")
@@ -185,6 +186,65 @@ public class UserController {
             return new BaseRespDTO().toString();
         }catch (Exception e){
             logger.error("exception occurred in userLogout :",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 删除用户信息
+     * @param id
+     * @return
+     */
+    @PostMapping("/delete/{id}")
+    public String deleteUserInfo(@PathVariable(value = "id") String id){
+        logger.info("the params of deleteUserInfo is :{}",id);
+        try {
+            String result = this.restTemplate.postForEntity(Constant.DELETE_USER_INFO,null,String.class,id).getBody();
+            logger.info("this result of deleteUserInfo is : {}" ,result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in deleteUserInfo :",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 更新用户信息
+     * @param id
+     * @param request
+     * @return
+     */
+    @PostMapping("/update/{id}")
+    public String updateUserInfo(@PathVariable(value = "id") String id, HttpServletRequest request){
+        Map<String,String> param = ControllerUtil.getParamtersMap(request);
+        logger.info("the params of updateUserInfo is :{},message:{}",id,param);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<String> entity = new HttpEntity<>(JSON.toJSONString(param),headers);
+            String result = this.restTemplate.postForEntity(Constant.UPDATE_USER_INFO,entity,String.class,id).getBody();
+            logger.info("this result of updateUserInfo is : {}" ,result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in updateUserInfo :",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 根据id查询用户信息
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/get/{id}")
+    public String getUserInfoById(@PathVariable(value = "id") String id){
+        logger.info("the params of getUserInfoById is :{}",id);
+        try {
+            String result = this.restTemplate.getForEntity(Constant.GET_USER_INFO_BY_ID,String.class,id).getBody();
+            logger.info("this result of getUserInfoById is : {}" ,result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getUserInfoById :",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }

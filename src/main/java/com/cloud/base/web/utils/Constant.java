@@ -59,4 +59,8 @@ public final class Constant {
     public static final String UPDATE_ROLE_INFO = USER_SERVICE + "/role/update/{id}";
     /**删除角色信息*/
     public static final String DELETE_ROLE_INFO = USER_SERVICE + "/role/delete/{id}";
+    /**删除用户信息*/
+    public static final String DELETE_USER_INFO = USER_SERVICE + "/delete/{id}";
+    /**更新用户信息*/
+    public static final String UPDATE_USER_INFO = USER_SERVICE + "/update/{id}";
 }

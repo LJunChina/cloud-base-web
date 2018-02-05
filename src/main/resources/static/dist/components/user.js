@@ -110,19 +110,19 @@ var userDefColumns = [{
             "                                        分配角色" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button delete\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">删除</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray remove icon\"></i>" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">编辑</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray edit icon\"></i>" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button query-user\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='\"+data+\"'>" +
+            "<div class=\"ui vertical animated button query-role\" style='margin-bottom:0px!important;' tabindex=\"0\" data-id='"+data+"'>" +
             "                                    <div class=\"visible content\">查看角色</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray search icon\"></i>" +
@@ -173,13 +173,36 @@ function initTable(aoColumn,aoColumnDefs,url,dom) {
     },aoColumn,aoColumnDefs,initComplete,dom);
 }
 
+
+function updateUserForm(updateUserId) {
+    var formData = $('#update-user-form input').serializeArray();
+    $.post("/update/" + updateUserId,formData,function (data) {
+        var resultData = JSON.parse(data);
+        if(resultData.code === '0000'){
+            $.success("处理成功！",function (e) {
+                if(e){
+                    $(".ui.modal.standard").modal('hide');
+                    initTable(userColumns,userDefColumns,'/get-user-list','#user_table');
+                }
+            });
+        }else if(resultData.code === '8001' || resultData.code === '9014' || resultData.code === '7000'){
+            $.info(resultData.message,function (e) {
+                if(e){
+                    self.location.reload(true);
+                }
+            });
+        }else {
+            $.error(resultData.message,null);
+        }
+    });
+}
 /**
  * 表格加载完成后的回调函数
  * @param oSettings
  * @param json
  */
 function initComplete(oSettings, json) {
-    //加载角色数据
+    //分配角色操作
     $("#user_table").on('click','div.allocation-role',function () {
         userId = $(this).data("id");
         //初始化角色数据表格
@@ -238,8 +261,125 @@ function initComplete(oSettings, json) {
             "margin-top" :'-300px'
         });
     });
+    //删除用户操作
+    $("#user_table").on('click','div.delete',function () {
+        var deleteUserId = $(this).data("id");
+        $.confirm("确定要删除该用户吗？","",function (e) {
+            if(e){
+                //发送请求
+                $.post('/delete/' + deleteUserId,null,function (result) {
+                    var resp = JSON.parse(result);
+                    if(resp && resp.code === '0000'){
+                        $.success(resp.message,function (e) {
+                            if(e){
+                                initTable(userColumns,userDefColumns,'/get-user-list','#user_table')
+                            }
+                        });
+                    }else if(resp.code === '7000' || resp.code === '8001' || resp.code === '9104'){
+                        $.info(resp.message,function (e) {
+                            if(e){
+                                self.location.reload(true);
+                            }
+                        })
+                    }else {
+                        $.error(resp.message,null);
+                    }
+                });
+            }
+        })
+    });
+    //更新用户操作
+    $("#user_table").on('click','div.edit',function () {
+        var updateUserId = $(this).data("id");
+        //加载用户信息到modal
+        $.getJSON('/get/' + updateUserId,null,function (resp) {
+            if(resp && resp.code === '0000'){
+                var userData = resp.data;
+                $("#update-user-form input[name='userName']").val(userData.userName);
+                $("#update-user-form input[name='name']").val(userData.name);
+                $("#update-user-form input[name='email']").val(userData.email);
+                $("#update-user-form input[name='idCard']").val(userData.idCard);
+                $("#update-user-form input[name='mobile']").val(userData.mobile);
+                $("#update-user-form input[name='sex'][value='" + userData.sex + "']").attr('checked', true);
+                //加载系统信息列表
+                $.getJSON('/system-info/get-system-info',{pageIndex:1,pageSize:99999},function (systemResp) {
+                    if(systemResp && systemResp.code === '0000'){
+                        var list = systemResp.data.list;
+                        var objectValues = [];
+                        if(list && list.length > 0){
+                            $("#update-user-system-data").html("");
+                            $.each(list,function () {
+                                if(resp.data.appId === this.id){
+                                    //设置dropDown的默认值
+                                    objectValues.push({
+                                        "name":this.systemName,
+                                        "value":this.id,
+                                        "selected":true
+                                    });
+                                }else {
+                                    objectValues.push({
+                                        "name":this.systemName,
+                                        "value":this.id
+                                    });
+                                }
+                            });
+                            $("#update-user-dropdown").dropdown({
+                                values:objectValues
+                            });
+                        }
+                    }else {
+                        self.location = "../login.html";
+                    }
+                });
+                //弹出遮蔽罩
+                $("#update-user-modal").modal({
+                    closable: false,
+                    onDeny: function () {
+                    },
+                    onApprove: function () {
+                        //提交后的处理 update-user-form
+                        $('#update-user-form').submit();
+                        $('#update-user-form').form({
+                            fields: {
+                                userName: {
+                                    identifier  : 'userName',
+                                    rules: [
+                                        {
+                                            type   : 'empty',
+                                            prompt : '请输入用户名称'
+                                        }
+                                    ]
+                                },
+                                name: {
+                                    identifier  : 'name',
+                                    rules: [
+                                        {
+                                            type   : 'empty',
+                                            prompt : '真实姓名'
+                                        }
+                                    ]
+                                }
+                            },
+                            onSuccess : updateUserForm(updateUserId)
+                        });
+                    }
+                }).modal('show');
+                $('#update-user-form').submit(function (e) {
+                    return false;
+                });
+            }else if (resp.code === '8001' || resp.code === '7000' || resp.code === '9014'){
+                $.info(resp.message, function (e) {
+                    self.location .reload(true);
+                });
+            }else {
+                $.error(resp.message,null);
+            }
+
+        });
+
+    });
 }
 $(document).ready(function () {
     //初始化表格
-    initTable(userColumns,userDefColumns,'/get-user-list','#user_table')
+    initTable(userColumns,userDefColumns,'/get-user-list','#user_table');
 });
