@@ -38,7 +38,7 @@ function createDataTable(returnData,aoColumns,aoColumnDefs,fnInitComplete,dom) {
         "fnServerData":returnData,
         "searching": false,
         "oLanguage": { //国际化配置
-            "sProcessing": "正在获取数据，请稍后...",
+            "sProcessing": "<span style='color:#ff0000;'><img src='../assets/images/loading.gif'></span>",
             "sLengthMenu": "显示 _MENU_ 条",
             "sZeroRecords": "没有您要搜索的内容",
             "sInfo": "从 _START_ 到  _END_ 条记录 总记录数为 _TOTAL_ 条",
