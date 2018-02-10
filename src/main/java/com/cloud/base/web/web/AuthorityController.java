@@ -1,5 +1,6 @@
 package com.cloud.base.web.web;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.base.sso.context.LoginUser;
 import com.cloud.base.sso.context.LoginUserContext;
@@ -142,6 +143,66 @@ public class AuthorityController {
             return result;
         }catch (Exception e){
             logger.error("exception occurred in allocationAuth",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 根据id删除菜单/权限信息
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/delete/{id}")
+    public String deleteAuthorityById(@PathVariable(value = "id") String id){
+        logger.info("param of deleteAuthorityById,id:{}",id);
+        try {
+            String result = this.restTemplate.postForEntity(Constant.DELETE_AUTHORITY,null,String.class,id).getBody();
+            logger.info("result of deleteAuthorityById:{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in deleteAuthorityById",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+
+    /**
+     * 更新菜单/权限信息
+     * @param id
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/update/{id}")
+    public String updateAuthority(@PathVariable(value = "id") String id,HttpServletRequest request){
+        Map<String,String> params = ControllerUtil.getParamtersMap(request);
+        logger.info("param of deleteAuthorityById,id:{},request:{}",id,params);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<String> entity = new HttpEntity<>(JSON.toJSONString(params),headers);
+            String result = this.restTemplate.postForEntity(Constant.UPDATE_AUTHORITY,entity,String.class,id).getBody();
+            logger.info("result of updateAuthority:{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in updateAuthority",e);
+            return new BaseRespDTO(ResultCode.ERROR).toString();
+        }
+    }
+
+    /**
+     * 菜单/权限详情查询api
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/get/{id}")
+    public String getAuthorityInfo(@PathVariable(value = "id") String id){
+        logger.info("param of getAuthorityInfo,id:{",id);
+        try {
+            String result = this.restTemplate.getForEntity(Constant.GET_AUTHORITY,String.class,id).getBody();
+            logger.info("result of getAuthorityInfo:{}",result);
+            return result;
+        }catch (Exception e){
+            logger.error("exception occurred in getAuthorityInfo",e);
             return new BaseRespDTO(ResultCode.ERROR).toString();
         }
     }

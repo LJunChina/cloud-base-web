@@ -12,7 +12,7 @@ function serverAjaxData(url,method,fnCallback,paramData) {
                     "recordsFiltered":resp.data.total,
                     "data":resp.data.list
                 });
-            }else if (resp.code === '7001' || resp.code === '8000' || resp.code === '9104'){
+            }else if (resp.code === '7000' || resp.code === '8001' || resp.code === '9104'){
                 $.info(resp.message,function (e) {
                    if(e){
                        self.location.reload(true);

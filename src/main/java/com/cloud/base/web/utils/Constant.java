@@ -63,4 +63,10 @@ public final class Constant {
     public static final String DELETE_USER_INFO = USER_SERVICE + "/delete/{id}";
     /**更新用户信息*/
     public static final String UPDATE_USER_INFO = USER_SERVICE + "/update/{id}";
+    /**删除权限/菜单信息*/
+    public static final String DELETE_AUTHORITY = USER_SERVICE + "/auth/delete/{id}";
+    /**更新权限/菜单信息*/
+    public static final String UPDATE_AUTHORITY = USER_SERVICE + "/auth/update/{id}";
+    /**查询权限详情*/
+    public static final String GET_AUTHORITY = USER_SERVICE + "/auth/{id}";
 }
