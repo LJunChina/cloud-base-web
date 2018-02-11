@@ -103,9 +103,10 @@ public class AuthorityController {
                                           @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize,
                                           @RequestParam(value = "appName",defaultValue = StringUtils.EMPTY)String appName,
                                           @RequestParam(value = "itemType",defaultValue = StringUtils.EMPTY)String itemType,
-                                          @RequestParam(value = "roleId",defaultValue = StringUtils.EMPTY)String roleId){
-        logger.info("the params of getAllAuthoritiesByPage,name:{},pageIndex:{},pageSize:{},appName:{},itemType:{},roleId:{}"
-                ,name,pageIndex,pageSize,appName,itemType,roleId);
+                                          @RequestParam(value = "roleId",defaultValue = StringUtils.EMPTY)String roleId,
+                                          @RequestParam(value = "appId",defaultValue = StringUtils.EMPTY) String appId){
+        logger.info("the params of getAllAuthoritiesByPage,name:{},pageIndex:{},pageSize:{},appName:{},itemType:{},roleId:{},appId:{}"
+                ,name,pageIndex,pageSize,appName,itemType,roleId,appId);
         try {
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
@@ -114,6 +115,7 @@ public class AuthorityController {
             params.put("appName",appName);
             params.put("itemType",itemType);
             params.put("roleId",roleId);
+            params.put("appId",appId);
             String result = this.restTemplate.getForEntity(Constant.GET_ALL_AUTHORITIES_BY_PAGE,String.class,params).getBody();
             logger.info("result of the getAllAuthoritiesByPage is :{}",result);
             return result;

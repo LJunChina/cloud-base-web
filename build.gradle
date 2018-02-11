@@ -24,6 +24,11 @@ group = 'com.cloud'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
+configurations.all {
+    //总是拉取最新jar包
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
 	maven {
 		url 'http://115.159.152.121:8080/nexus/content/groups/public/'
@@ -48,6 +53,7 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+//sonar配置
 sonarqube{
 	properties{
 		property "sonar.projectName","cloud-base-web"
