@@ -10,6 +10,8 @@ package com.cloud.base.web.utils;
 public final class Constant {
     /**用户服务*/
     private static final String USER_SERVICE = "http://user-microservice";
+    /**定时任务服务*/
+    private static final String SCHEDULE_SERVICE = "http://cloud-schedule-center";
 
     /**获取公钥*/
     public static final String GET_PUBLIC_KEY = USER_SERVICE + "/get-public-key";
@@ -69,4 +71,6 @@ public final class Constant {
     public static final String UPDATE_AUTHORITY = USER_SERVICE + "/auth/update/{id}";
     /**查询权限详情*/
     public static final String GET_AUTHORITY = USER_SERVICE + "/auth/{id}";
+    /**新增定时任务 */
+    public static final String SCHEDULE_TASK_SAVE = SCHEDULE_SERVICE + "/schedule-task/add";
 }
