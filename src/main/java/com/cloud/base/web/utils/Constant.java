@@ -73,4 +73,12 @@ public final class Constant {
     public static final String GET_AUTHORITY = USER_SERVICE + "/auth/{id}";
     /**新增定时任务 */
     public static final String SCHEDULE_TASK_SAVE = SCHEDULE_SERVICE + "/schedule-task/add";
+    /**定时任务分页查询 */
+    public static final String SCHEDULE_GET_TASKS_PAGE = SCHEDULE_SERVICE + "/schedule-task/page";
+    /**根据id删除定时任务 */
+    public static final String SCHEDULE_DELETE_TASK = SCHEDULE_SERVICE + "/schedule-task/delete/{id}";
+    /**根据id更新定时任务 */
+    public static final String SCHEDULE_UPDATE_TASK = SCHEDULE_SERVICE + "/schedule-task/update/{id}";
+    /**根据id查询定时任务 */
+    public static final String SCHEDULE_GET_JOB = SCHEDULE_SERVICE + "/schedule-task/job/{id}";
 }
