@@ -104,7 +104,7 @@ public class ScheduleTaskController {
      */
     @PostMapping(value = "/delete/{id}")
     public String deleteJobById(@PathVariable(value = "id") long id){
-        LOGGER.info("params of deleteJobById:",id);
+        LOGGER.info("params of deleteJobById:{}",id);
         try {
             String result = this.restTemplate.postForEntity(Constant.SCHEDULE_DELETE_TASK,null,String.class,id).getBody();
             LOGGER.info("result of deleteJobById:",result);
@@ -122,7 +122,7 @@ public class ScheduleTaskController {
      */
     @GetMapping(value = "/job/{id}")
     public String getJobById(@PathVariable(value = "id") long id){
-        LOGGER.info("params of getJobById:",id);
+        LOGGER.info("params of getJobById:{}",id);
         try {
             String result = this.restTemplate.getForEntity(Constant.SCHEDULE_GET_JOB,String.class,id).getBody();
             LOGGER.info("result of getJobById:",result);
