@@ -7,15 +7,12 @@ import com.cloud.base.web.utils.ControllerUtil;
 import com.cloud.common.dto.BaseRespDTO;
 import com.cloud.common.enums.ResultCode;
 import com.cloud.common.util.WebParameterUtil;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
