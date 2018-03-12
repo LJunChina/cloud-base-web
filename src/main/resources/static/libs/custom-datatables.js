@@ -66,6 +66,7 @@ function createDataTable(returnData,aoColumns,aoColumnDefs,fnInitComplete,dom) {
         "aoColumnDefs":aoColumnDefs,
         "fnInitComplete":fnInitComplete
     };
+    $(dom).html("");
     $(dom).DataTable(option);
 }
 
