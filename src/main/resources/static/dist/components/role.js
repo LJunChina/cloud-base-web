@@ -186,7 +186,7 @@ function loadEvent(oSettings, json) {
         //重新加载数据
         createDataTable(function(sSource, aDataSet, fnCallback){
             var params = {
-                "pageIndex":getPageSize(aDataSet),
+                "pageIndex":getPageIndex(aDataSet),
                 "pageSize" : getPageSize(aDataSet),
                 "itemType" : '1',
                 "roleId":roleId
