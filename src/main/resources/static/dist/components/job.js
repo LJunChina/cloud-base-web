@@ -1,41 +1,52 @@
 ﻿var aoColumn = [{
-    "mDataProp" : "systemName",
+    "mDataProp" : "jobName",
     "sDefaultContent" : "", //此列默认值为""，以防数据中没有此值，DataTables加载数据的时候报错
-    "sTitle" : "业务系统名称",
+    "sTitle" : "任务名称",
     "sClass" : "center"
 }, {
-    "mDataProp" : "systemChn",
-    "sTitle" : "业务系统中文名称",
+    "mDataProp" : "jobGroup",
+    "sTitle" : "任务组",
     "sDefaultContent" : "",
     "sClass" : "center"
 }, {
-    "mDataProp" : "systemContext",
-    "sTitle" : "系统context",
+    "mDataProp" : "jobStatus",
+    "sTitle" : "任务状态",
     "sDefaultContent" : "",
     "sClass" : "center"
 }, {
-    "mDataProp" : "systemHost",
-    "sTitle" : "系统host",
+    "mDataProp" : "cronExpression",
+    "sTitle" : "cron表达式",
     "sDefaultContent" : "",
     "sClass" : "center"
 }, {
+    "mDataProp" : "beanClass",
+    "sTitle" : "任务触发类",
+    "sDefaultContent" : "",
+    "sClass" : "center"
+},{
     "mDataProp" : "id",
     "sTitle" : "操作",
     "sDefaultContent" : "",
     "sClass" : "center",
-    "width" : '15%'
+    "width" : '20%'
 }];
 var aoColumnDefs = [{
-    "aTargets":[4],"mRender":function(data,type,full){
+    "aTargets":[5],"mRender":function(data,type,full){
         var id = full.id || null;
-        return "<div class=\"ui vertical animated button delete-system\" style='margin-bottom:0px!important;' tabindex='0' data-id='"+id+"'>" +
-            "                                    <div class=\"visible content\">删除系统</div>" +
+        return "<div class=\"ui vertical animated button delete-job\" style='margin-bottom:0px!important;' tabindex='0' data-id='"+id+"'>" +
+            "                                    <div class=\"visible content\">删除任务</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray remove icon\"></i>" +
             "                                    </div>" +
             "                                </div>" +
-            "<div class=\"ui vertical animated button edit\" style='margin-bottom:0px!important;' tabindex=\"0\" data-value='horizontal flip' data-id='"+id+"'>" +
-            "                                    <div class=\"visible content\">更新系统</div>" +
+            "<div class=\"ui vertical animated button pause\" style='margin-bottom:0px!important;' tabindex='0' data-id='"+id+"'>" +
+            "                                    <div class=\"visible content\">暂停</div>" +
+            "                                    <div class=\"hidden content\">" +
+            "                                        <i class=\"gray remove icon\"></i>" +
+            "                                    </div>" +
+            "                                </div>" +
+            "<div class=\"ui vertical animated button edit-job\" style='margin-bottom:0px!important;' tabindex=\"0\" data-value='horizontal flip' data-id='"+id+"'>" +
+            "                                    <div class=\"visible content\">更新任务</div>" +
             "                                    <div class=\"hidden content\">" +
             "                                        <i class=\"gray edit icon\"></i>" +
             "                                    </div>" +
@@ -44,14 +55,14 @@ var aoColumnDefs = [{
 }];
 function loadSystemEvent(oSettings, json) {
     //删除系统
-    $("div.delete-system").on('click',function () {
+    $("#job_table").on('click','div.delete-job',function () {
         var id = $(this).data('id');
         if(!id){
             return;
         }
-        $.confirm('确定要删除吗?','这会导致该系统所有功能不可用',function (e) {
+        $.confirm('确定要删除吗?','这会导致该任务丢失',function (e) {
             if(e){
-                $.post('/system-info/delete-system-info',{id:id},function (resp) {
+                $.post('/schedule/delete/' + id,null,function (resp) {
                     var result = JSON.parse(resp);
                     if(result && result.code === '0000'){
                         $.success("删除成功",function (e) {
@@ -66,7 +77,7 @@ function loadSystemEvent(oSettings, json) {
         });
     });
     //更新事件
-    $("div.edit").on('click',function () {
+    $("#job_table").on('click','div.edit-job',function () {
         var id = $(this).data('id');
         if(!id){
             return;
@@ -148,10 +159,10 @@ function initTable(aoColumn,aoColumnDefs) {
             "pageIndex":getPageIndex(aDataSet),
             "pageSize" : getPageSize(aDataSet)
         };
-        serverAjaxData("/system-info/get-system-info",'get',fnCallback,params);
-    },aoColumn,aoColumnDefs,loadSystemEvent,'#system_table');
+        serverAjaxData("/schedule/page",'get',fnCallback,params);
+    },aoColumn,aoColumnDefs,loadSystemEvent,'#job_table');
 }
 $(document).ready(function () {
-    //initTable(aoColumn,aoColumnDefs);
+    initTable(aoColumn,aoColumnDefs);
 });
 
