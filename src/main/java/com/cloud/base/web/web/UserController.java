@@ -3,6 +3,7 @@ package com.cloud.base.web.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.base.sso.context.LoginUserContext;
+import com.cloud.base.web.service.UserService;
 import com.cloud.base.web.utils.Constant;
 import com.cloud.base.web.utils.ControllerUtil;
 import com.cloud.common.dto.BaseRespDTO;
@@ -34,6 +35,8 @@ public class UserController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private UserService userService;
 
     /**
      * 用户登录
@@ -73,7 +76,7 @@ public class UserController {
      */
     @GetMapping("/get-public-key")
     public String getPublicKey(){
-        String result = this.restTemplate.getForEntity(Constant.GET_PUBLIC_KEY,String.class).getBody();
+        String result = this.userService.getPublicKey();
         logger.info("this result is : {}" ,result);
         return result;
     }
